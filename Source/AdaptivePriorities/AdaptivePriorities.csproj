@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <RootNamespace>AdaptivePriorities</RootNamespace>
+    <AssemblyName>AdaptivePriorities</AssemblyName>
+    <Deterministic>true</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- The assembly is version-specific (built against 1.6's Assembly-CSharp), so it builds into the
+         1.6 load folder alongside the versioned Defs/Patches (see LoadFolders.xml). A future version
+         recompiles into its own <version>\Assemblies. -->
+    <OutputPath>..\..\1.6\Assemblies\</OutputPath>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+
+    <!-- Override on the command line if RimWorld isn't installed via Steam at the default path:
+         dotnet build -p:RimWorldInstallDir="D:\Games\RimWorld" -->
+    <RimWorldInstallDir Condition="'$(RimWorldInstallDir)' == '' AND Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld</RimWorldInstallDir>
+    <RimWorldInstallDir Condition="'$(RimWorldInstallDir)' == '' AND Exists('C:\Program Files\Steam\steamapps\common\RimWorld')">C:\Program Files\Steam\steamapps\common\RimWorld</RimWorldInstallDir>
+    <RimWorldManagedDir>$(RimWorldInstallDir)\RimWorldWin64_Data\Managed</RimWorldManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Lets an SDK-style net472 project compile without a full Visual Studio install. -->
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+    <!-- Compile-time only: the runtime 0Harmony.dll is provided by the Harmony mod
+         (brrainz.harmony), declared as a dependency in About.xml. Never bundle it. -->
+    <PackageReference Include="Lib.Harmony" Version="2.3.3" ExcludeAssets="runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="EnsureRimWorldFound" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="'$(RimWorldInstallDir)' == '' OR !Exists('$(RimWorldManagedDir)\Assembly-CSharp.dll')"
+           Text="RimWorld install not found. Pass -p:RimWorldInstallDir=&quot;&lt;path to RimWorld folder&gt;&quot; to dotnet build." />
+  </Target>
+
+</Project>

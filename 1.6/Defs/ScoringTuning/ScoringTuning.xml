@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Weights for the pawn/work-type scoring formula. Patch these values (PatchOperationReplace)
+       to rebalance the automation without recompiling anything. -->
+  <AdaptivePriorities.ScoringTuningDef>
+    <defName>DefaultScoringTuning</defName>
+    <label>default scoring tuning</label>
+    <skillWeight>0.7</skillWeight>
+    <minorPassionBonus>0.15</minorPassionBonus>
+    <majorPassionBonus>0.3</majorPassionBonus>
+    <noSkillWorkScore>0.5</noSkillWorkScore>
+    <relativeWeight>0.5</relativeWeight>
+    <qualityWeight>0.5</qualityWeight>
+    <opposedWorkFactor>0</opposedWorkFactor>
+    <assignOpposedWhenNeeded>true</assignOpposedWhenNeeded>
+    <workStatWeight>0.5</workStatWeight>
+    <inspirationBonusEnabled>true</inspirationBonusEnabled>
+    <inspirationBonus>0.5</inspirationBonus>
+    <inspirationUrgency>0.9</inspirationUrgency>
+  </AdaptivePriorities.ScoringTuningDef>
+
+</Defs>

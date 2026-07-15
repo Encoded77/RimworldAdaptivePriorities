@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <!-- Work tab control -->
+  <AP_AutoModeLabel>Auto</AP_AutoModeLabel>
+  <AP_AutoModeTabTip>When on, work priorities are reassigned automatically on a set interval (see mod settings). When off, press Optimize to assign once.\n\nMiddle-click to lock things so they're never changed automatically:\n- a colonist's name — that whole pawn\n- a column header — that work type\n- a single cell — just that one job\nLocked items show a padlock.</AP_AutoModeTabTip>
+  <AP_Optimize>Optimize</AP_Optimize>
+  <AP_RecalculateDone>{0} priorities updated.</AP_RecalculateDone>
+
+  <!-- Settings: automatic assignment -->
+  <AP_AutoHeader>Automatic assignment</AP_AutoHeader>
+  <AP_AutoInterval>Reassign every {0} hour(s)</AP_AutoInterval>
+  <AP_AutoIntervalTip>How often work is reassigned. Longer is calmer — priorities won't chase short-lived events like a brief mental break. 24 = once per day.</AP_AutoIntervalTip>
+
+  <!-- Settings: general -->
+  <AP_AdvancedMode>Show advanced settings</AP_AdvancedMode>
+  <AP_ResetAll>Reset everything</AP_ResetAll>
+  <AP_Reset>Reset</AP_Reset>
+
+  <!-- Settings: scoring -->
+  <AP_ScoringHeader>Scoring</AP_ScoringHeader>
+  <AP_SkillImportance>Skill importance</AP_SkillImportance>
+  <AP_MinorPassionBonus>Minor passion bonus</AP_MinorPassionBonus>
+  <AP_MajorPassionBonus>Major passion bonus</AP_MajorPassionBonus>
+  <AP_RewardSpecialists>Reward specialists</AP_RewardSpecialists>
+  <AP_InspirationBoost>Boost inspired pawns</AP_InspirationBoost>
+  <AP_AssignOpposed>Assign disliked work when needed</AP_AssignOpposed>
+  <AP_UnskilledBaseline>Unskilled work baseline</AP_UnskilledBaseline>
+  <AP_CompareToBest>Compare to colony's best</AP_CompareToBest>
+  <AP_UseWorkSpeed>Use work-speed stats</AP_UseWorkSpeed>
+  <AP_OpposedWork>Ideology-opposed work</AP_OpposedWork>
+  <AP_InspirationStrength>Inspiration boost strength</AP_InspirationStrength>
+  <AP_InspirationPriority>Inspiration priority</AP_InspirationPriority>
+
+  <!-- Settings: per work type -->
+  <AP_WorkTypesHeader>Work types</AP_WorkTypesHeader>
+  <AP_Importance>Importance</AP_Importance>
+  <AP_Everyone>Everyone does this</AP_Everyone>
+  <AP_MinWorkers>Minimum workers</AP_MinWorkers>
+  <AP_SpecialistCutoff>Specialist cutoff</AP_SpecialistCutoff>
+  <AP_MaxWorkersShare>Max workers (share of colony)</AP_MaxWorkersShare>
+  <AP_AlwaysTop>Always top priority</AP_AlwaysTop>
+
+</LanguageData>

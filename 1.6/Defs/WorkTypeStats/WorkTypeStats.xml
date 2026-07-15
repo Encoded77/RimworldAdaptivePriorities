@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Work type -> aptitude stat(s) the scorer folds into a pawn's score, capturing trait/gene/
+       bionic modifiers beyond raw skill. Multiple stats are averaged. Stat names resolve at
+       runtime and are skipped if absent (e.g. DLC/modded stats), so entries never error on load.
+       Add entries for modded work types; anything without one uses the fallback below. -->
+
+  <!-- Fallback for work types without their own entry, including unknown modded ones.
+       WorkSpeedGlobal is the "any work" multiplier, so it still captures Industrious/Slothful
+       and similar for jobs that have no specific speed stat (Firefighter, Hauling, Warden...). -->
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>FallbackWorkStats</defName>
+    <stats>
+      <li>WorkSpeedGlobal</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>DoctorStats</defName>
+    <workTypeDef>Doctor</workTypeDef>
+    <stats>
+      <li>MedicalTendSpeed</li>
+      <li>MedicalOperationSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>HandlingStats</defName>
+    <workTypeDef>Handling</workTypeDef>
+    <stats>
+      <li>AnimalGatherSpeed</li>
+      <li>AnimalGatherYield</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <!-- Cooking work type also covers butchering; ButcheryFleshEfficiency rewards a good butcher. -->
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>CookingStats</defName>
+    <workTypeDef>Cooking</workTypeDef>
+    <stats>
+      <li>CookSpeed</li>
+      <li>ButcheryFleshEfficiency</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>ConstructionStats</defName>
+    <workTypeDef>Construction</workTypeDef>
+    <stats>
+      <li>ConstructionSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>GrowingStats</defName>
+    <workTypeDef>Growing</workTypeDef>
+    <stats>
+      <li>PlantWorkSpeed</li>
+      <li>PlantHarvestYield</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>MiningStats</defName>
+    <workTypeDef>Mining</workTypeDef>
+    <stats>
+      <li>MiningSpeed</li>
+      <li>MiningYield</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>PlantCuttingStats</defName>
+    <workTypeDef>PlantCutting</workTypeDef>
+    <stats>
+      <li>PlantWorkSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <!-- Smithing/Tailoring/Art/Crafting are dumb-labor-speed jobs: quality is skill-driven (already
+       in the base score), speed is GeneralLaborSpeed. -->
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>SmithingStats</defName>
+    <workTypeDef>Smithing</workTypeDef>
+    <stats>
+      <li>GeneralLaborSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>TailoringStats</defName>
+    <workTypeDef>Tailoring</workTypeDef>
+    <stats>
+      <li>GeneralLaborSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>ArtStats</defName>
+    <workTypeDef>Art</workTypeDef>
+    <stats>
+      <li>GeneralLaborSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>CraftingStats</defName>
+    <workTypeDef>Crafting</workTypeDef>
+    <stats>
+      <li>GeneralLaborSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>CleaningStats</defName>
+    <workTypeDef>Cleaning</workTypeDef>
+    <stats>
+      <li>CleaningSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>ResearchStats</defName>
+    <workTypeDef>Research</workTypeDef>
+    <stats>
+      <li>ResearchSpeed</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <!-- Fishing is Odyssey DLC; FishingSpeed is skipped silently if the DLC is absent, leaving no
+       stats for this work type (base skill+passion score still applies). -->
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>FishingStats</defName>
+    <workTypeDef>Fishing</workTypeDef>
+    <stats>
+      <li>FishingSpeed</li>
+      <li>FishingYield</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+</Defs>

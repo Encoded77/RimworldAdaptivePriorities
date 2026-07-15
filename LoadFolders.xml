@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Explicit multi-version load order. Common holds only content that never changes between game
+     versions (Languages, Textures). Each game-version folder holds everything that can drift with the
+     version: the assembly, the Defs, and the mod-compat Patches. To support a new version, add a
+     <vX.Y> entry and populate <X.Y> (copy 1.6's Defs/Patches as a starting point, recompile the DLL
+     against that version). -->
+<loadFolders>
+  <v1.6>
+    <li>Common</li>
+    <li>1.6</li>
+  </v1.6>
+</loadFolders>

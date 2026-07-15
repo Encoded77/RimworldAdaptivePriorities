@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Colony-wide assignment policy per work type. urgency 1.0 maps to priority 1, lower urgency
+       maps deeper into the range. Specialist jobs go to the best (maxWorkersFraction) capable
+       pawns above scoreCutoff; minWorkers guarantees coverage even in a colony of bad fits.
+
+       Only judgment overrides live here. Every work type without an explicit def - all standard
+       specialist jobs (Cooking, Construction, Growing, Mining, Smithing...) and all modded ones -
+       gets a policy derived from its own WorkTypeDef: urgency from naturalPriority (normalized
+       against the highest loaded), assignEveryone when the job has no relevant skills. -->
+
+  <AdaptivePriorities.WorkTypePolicyDef Name="AP_PolicyBase" Abstract="True">
+    <urgency>0.66</urgency>
+    <minWorkers>1</minWorkers>
+    <maxWorkersFraction>0.5</maxWorkersFraction>
+    <scoreCutoff>0.35</scoreCutoff>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <!-- Critical, everyone does it, top priority. -->
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>FirefighterPolicy</defName>
+    <workTypeDef>Firefighter</workTypeDef>
+    <urgency>1</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>PatientPolicy</defName>
+    <workTypeDef>Patient</workTypeDef>
+    <urgency>1</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>BasicWorkerPolicy</defName>
+    <workTypeDef>BasicWorker</workTypeDef>
+    <urgency>1</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>HaulingPolicy</defName>
+    <workTypeDef>Hauling</workTypeDef>
+    <urgency>1</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>CleaningPolicy</defName>
+    <workTypeDef>Cleaning</workTypeDef>
+    <urgency>1</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <!-- Everyone, but lower urgency: resting is important, not a drop-everything job. -->
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>PatientBedRestPolicy</defName>
+    <workTypeDef>PatientBedRest</workTypeDef>
+    <urgency>0.33</urgency>
+    <assignEveryone>true</assignEveryone>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <!-- Critical specialist jobs: top urgency for the best pawns, above what naturalPriority
+       would derive. -->
+  <!-- pinPriority: a competent doctor must stay at priority 1 -->
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>DoctorPolicy</defName>
+    <workTypeDef>Doctor</workTypeDef>
+    <urgency>1</urgency>
+    <pinPriority>true</pinPriority>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <!-- Moderate-urgency specialists. NOT urgency 1: with the pivot priority formula, urgency 1 on
+       a non-pinned job puts every above-average pawn at priority 1, which saturates badly on large
+       colonies (dozens of "researcher priority 1"). Reserve urgency 1 for pinned/assignEveryone
+       work. These values give the best pawn a high-but-not-top priority and spread the rest. -->
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>WardenPolicy</defName>
+    <workTypeDef>Warden</workTypeDef>
+    <urgency>0.7</urgency>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>ChildcarePolicy</defName>
+    <workTypeDef>Childcare</workTypeDef>
+    <urgency>0.75</urgency>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <!-- Research: vanilla's naturalPriority (100) would derive to ~priority 8 (never done), while
+       urgency 1 pins everyone to 1. A moderate value keeps a dedicated researcher productive
+       without competing with other jobs. -->
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>ResearchPolicy</defName>
+    <workTypeDef>Research</workTypeDef>
+    <urgency>0.5</urgency>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+  <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
+    <defName>DarkStudyPolicy</defName>
+    <workTypeDef>DarkStudy</workTypeDef>
+    <urgency>0.4</urgency>
+  </AdaptivePriorities.WorkTypePolicyDef>
+
+</Defs>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Work Tab (JiaRG fork of Fluffy's Work Tab) stores its configured max priority in
+       WorkTab.Settings.maxPriority. Only read when the mod is active.
+       Other range-extending mods can be supported by adding a def like this one, from any mod,
+       with no reference to this mod's assembly. -->
+  <AdaptivePriorities.PriorityRangeSourceDef>
+    <defName>WorkTabRangeSource</defName>
+    <label>Work Tab priority range</label>
+    <modPackageId>Fluffy.WorkTab</modPackageId>
+    <typeName>WorkTab.Settings</typeName>
+    <memberName>maxPriority</memberName>
+  </AdaptivePriorities.PriorityRangeSourceDef>
+
+</Defs>

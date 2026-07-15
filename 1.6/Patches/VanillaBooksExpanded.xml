@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- First-party support for Vanilla Books Expanded's Writing work type (VBE_Writing).
+
+       Our defs already handle unknown work types by deriving a policy from naturalPriority and
+       falling back to WorkSpeedGlobal for stats, so VBE_Writing "works" without this patch - but
+       derivation treats it as a generic mid-priority job. This curates it as the Intellectual
+       specialist it actually is, and does so only when Vanilla Books Expanded is active (matched
+       by its About.xml <name>, not packageId), so we never inject a def referencing a work type
+       that wouldn't exist.
+
+       One worked example establishing the pattern; add a sibling <Operation> per supported mod. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Books Expanded</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>/Defs</xpath>
+      <value>
+
+        <!-- Writing is a dedicated-writer specialist, not an everyone-job. Moderate urgency so it
+             doesn't compete with medical/hauling, but a good writer still ranks above chore work.
+             Fields spelled out rather than inheriting AP_PolicyBase so the compat def is fully
+             self-contained. -->
+        <AdaptivePriorities.WorkTypePolicyDef>
+          <defName>AP_VBE_WritingPolicy</defName>
+          <workTypeDef>VBE_Writing</workTypeDef>
+          <urgency>0.45</urgency>
+          <minWorkers>1</minWorkers>
+          <maxWorkersFraction>0.5</maxWorkersFraction>
+          <scoreCutoff>0.35</scoreCutoff>
+        </AdaptivePriorities.WorkTypePolicyDef>
+
+        <!-- Intellectual aptitude proxy: ResearchSpeed carries the same trait/gene modifiers
+             (e.g. Great Thinker, intellectual genes) that make a good writer, layered on top of
+             the base Intellectual skill+passion score. Resolved at runtime and skipped silently
+             if absent, so this is safe even if the stat is ever renamed. -->
+        <AdaptivePriorities.WorkTypeStatsDef>
+          <defName>AP_VBE_WritingStats</defName>
+          <workTypeDef>VBE_Writing</workTypeDef>
+          <stats>
+            <li>ResearchSpeed</li>
+          </stats>
+        </AdaptivePriorities.WorkTypeStatsDef>
+
+      </value>
+    </match>
+  </Operation>
+
+</Patch>
