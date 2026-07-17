@@ -18,5 +18,28 @@ A RimWorld 1.6 mod that assigns colonist work priorities for you — based on sk
 
 - **Fluffy's Work Tab** — full lock/toggle UI works in its grid too, with no hard dependency. Extended priority ranges (e.g. 1–9) are detected automatically.
 - **Modded work types** are supported automatically (a sensible policy is derived from the work type itself). (first party support can be easily added via xml patches)
-- **Modded passions** (Vanilla Skills Expanded and similar) are handled generically.
+- **Modded passions** Most modded passions should work out of the box due to using a passions defined learning rate. First party support for Alpha Skills and VSE.
 - **Harmony** is required.
+
+
+# Changelog
+
+All notable changes to this project are documented in this file.
+
+## [1.1.0] - 2026-07-17
+
+### Added
+- Improved passion support across the mod.
+- Added dedicated support and tuning for **Alpha Skills** passions.
+- Added dedicated support and tuning for **Vanilla Expanded Skills** passions.
+- Added a debug action to generate a full colony-wide calculation report, making it easier to inspect and troubleshoot score calculations.
+
+### Changed
+- Hauling calculations now take both **carrying weight capacity** and **movement speed** into account, resulting in more accurate hauling behavior.
+
+---
+
+## [1.0.0] - 2026-07-16
+
+### Added
+- Initial public release.
