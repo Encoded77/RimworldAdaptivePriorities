@@ -13,4 +13,13 @@
     <memberName>maxPriority</memberName>
   </AdaptivePriorities.PriorityRangeSourceDef>
 
+  <AdaptivePriorities.PriorityRangeSourceDef>
+    <defName>PriorityMasterRangeSource</defName>
+    <label>PriorityMaster priority range</label>
+    <modPackageId>Lauriichan.PriorityMaster</modPackageId>
+    <typeName>PriorityMod.Core.PriorityMaster</typeName>
+    <memberName>settings</memberName>
+    <instanceMemberName>maxPriority</instanceMemberName>
+  </AdaptivePriorities.PriorityRangeSourceDef>
+
 </Defs>

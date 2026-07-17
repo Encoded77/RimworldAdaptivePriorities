@@ -74,6 +74,9 @@ namespace AdaptivePriorities.Core
             return 1f - (priority - HighestPriority) / (float)range;
         }
 
+        private const BindingFlags StaticFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+        private const BindingFlags InstanceFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
         private static List<Func<int>> ResolveSources()
         {
             var readers = new List<Func<int>>();
@@ -88,32 +91,12 @@ namespace AdaptivePriorities.Core
 
                 try
                 {
-                    var type = GenTypes.GetTypeInAnyAssembly(def.typeName);
-                    if (type == null)
+                    var reader = BuildReader(def);
+                    if (reader != null)
                     {
-                        Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': type '{def.typeName}' not found although mod '{def.modPackageId}' is active; skipping.");
-                        continue;
+                        readers.Add(reader);
+                        Log.Message($"[Adaptive Priorities] Priority range source active: {def.defName} (currently {SafeRead(reader)}).");
                     }
-
-                    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
-
-                    var field = type.GetField(def.memberName, flags);
-                    if (field != null && field.FieldType == typeof(int))
-                    {
-                        readers.Add(() => (int)field.GetValue(null));
-                        Log.Message($"[Adaptive Priorities] Priority range source active: {def.defName} ({def.typeName}.{def.memberName}, currently {(int)field.GetValue(null)}).");
-                        continue;
-                    }
-
-                    var property = type.GetProperty(def.memberName, flags);
-                    if (property != null && property.PropertyType == typeof(int) && property.GetMethod != null)
-                    {
-                        readers.Add(() => (int)property.GetValue(null));
-                        Log.Message($"[Adaptive Priorities] Priority range source active: {def.defName} ({def.typeName}.{def.memberName}, currently {(int)property.GetValue(null)}).");
-                        continue;
-                    }
-
-                    Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': no static int field/property '{def.memberName}' on '{def.typeName}'; skipping.");
                 }
                 catch (Exception e)
                 {
@@ -122,6 +105,88 @@ namespace AdaptivePriorities.Core
             }
 
             return readers;
+        }
+
+        private static Func<int> BuildReader(PriorityRangeSourceDef def)
+        {
+            var type = GenTypes.GetTypeInAnyAssembly(def.typeName);
+            if (type == null)
+            {
+                Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': type '{def.typeName}' not found although mod '{def.modPackageId}' is active; skipping.");
+                return null;
+            }
+
+            var root = ResolveMember(type, def.memberName, StaticFlags);
+            if (root == null)
+            {
+                Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': no static field/property/method '{def.memberName}' on '{def.typeName}'; skipping.");
+                return null;
+            }
+
+            if (def.instanceMemberName.NullOrEmpty())
+            {
+                if (root.MemberType != typeof(int))
+                {
+                    Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': static member '{def.memberName}' on '{def.typeName}' is not an int; skipping.");
+                    return null;
+                }
+
+                var getStatic = root.Get;
+                return () => (int)getStatic(null);
+            }
+
+            // memberName holds an instance; read the int off it.
+            var instance = ResolveMember(root.MemberType, def.instanceMemberName, InstanceFlags);
+            if (instance == null || instance.MemberType != typeof(int))
+            {
+                Log.Warning($"[Adaptive Priorities] Range source '{def.defName}': no instance int field/property/method '{def.instanceMemberName}' on '{root.MemberType}'; skipping.");
+                return null;
+            }
+
+            var getRoot = root.Get;
+            var getInstance = instance.Get;
+            return () =>
+            {
+                var target = getRoot(null);
+                if (target == null)
+                    return FallbackLowestPriority;
+                return (int)getInstance(target);
+            };
+        }
+
+        private static MemberAccessor ResolveMember(Type type, string name, BindingFlags flags)
+        {
+            var field = type.GetField(name, flags);
+            if (field != null)
+                return new MemberAccessor(target => field.GetValue(target), field.FieldType);
+
+            var property = type.GetProperty(name, flags);
+            if (property != null && property.GetMethod != null)
+                return new MemberAccessor(target => property.GetValue(target), property.PropertyType);
+
+            var method = type.GetMethod(name, flags, null, Type.EmptyTypes, null);
+            if (method != null)
+                return new MemberAccessor(target => method.Invoke(target, null), method.ReturnType);
+
+            return null;
+        }
+
+        private static int SafeRead(Func<int> reader)
+        {
+            try { return reader(); }
+            catch { return FallbackLowestPriority; }
+        }
+
+        private sealed class MemberAccessor
+        {
+            public readonly Func<object, object> Get;
+            public readonly Type MemberType;
+
+            public MemberAccessor(Func<object, object> get, Type memberType)
+            {
+                Get = get;
+                MemberType = memberType;
+            }
         }
     }
 }
