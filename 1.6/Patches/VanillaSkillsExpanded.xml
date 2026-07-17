@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- Score overrides for Vanilla Skills Expanded's own passions. VSE is the base Alpha Skills builds
+       on, but is playable without it, so these live here rather than in AlphaSkills.xml - that patch is
+       gated on Alpha Skills and would not apply.
+
+       VSE's other passions need no override: the curve reads Natural (2x) as 0.45 and Critical (3x) as
+       0.75. VSE's None def is flagged isBad, but PassionScoreService short-circuits Passion.None to 0
+       before the isBad floor applies, so it is already neutral. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Vanilla Skills Expanded</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>/Defs</xpath>
+      <value>
+
+        <!-- "Absolutely no interest in this skill." isBad, which PassionScoreService would floor to
+             -badPassionPenalty and steer the work away. Apathy gates learning, not competence: the
+             pawn's skill level stands, so an apathetic master should still take the job when they are
+             the best option. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_VSE_Apathy</defName>
+          <passionDef>VSE_Apathy</passionDef>
+          <bonus>0</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+      </value>
+    </match>
+  </Operation>
+
+</Patch>

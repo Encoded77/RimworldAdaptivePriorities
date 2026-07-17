@@ -4,7 +4,15 @@
   <!-- Work type -> aptitude stat(s) the scorer folds into a pawn's score, capturing trait/gene/
        bionic modifiers beyond raw skill. Multiple stats are averaged. Stat names resolve at
        runtime and are skipped if absent (e.g. DLC/modded stats), so entries never error on load.
-       Add entries for modded work types; anything without one uses the fallback below. -->
+       Add entries for modded work types; anything without one uses the fallback below.
+
+       Each stat is measured against a baseline. <li>StatName</li> is shorthand for baseline 1, correct
+       for work-speed stats since they are already multipliers centred on 1. An absolute stat needs its
+       baseline spelled out or it swamps every other term:
+
+         <li><stat>CarryingCapacity</stat><baseline>75</baseline></li>
+
+       weightFactor multiplies the global workStatWeight for one work type. -->
 
   <!-- Fallback for work types without their own entry, including unknown modded ones.
        WorkSpeedGlobal is the "any work" multiplier, so it still captures Industrious/Slothful
@@ -13,6 +21,26 @@
     <defName>FallbackWorkStats</defName>
     <stats>
       <li>WorkSpeedGlobal</li>
+    </stats>
+  </AdaptivePriorities.WorkTypeStatsDef>
+
+  <!-- Hauling has no relevant skill, so these stats are the only thing separating one hauler from
+       another - hence weightFactor 3, where a skill-backed work type uses 1. Baselines are the vanilla
+       colonist values: CarryingCapacity has no Human statBase and takes the StatDef default of 75,
+       MoveSpeed is 4.6 on the Human ThingDef. -->
+  <AdaptivePriorities.WorkTypeStatsDef>
+    <defName>HaulingStats</defName>
+    <workTypeDef>Hauling</workTypeDef>
+    <weightFactor>3</weightFactor>
+    <stats>
+      <li>
+        <stat>CarryingCapacity</stat>
+        <baseline>75</baseline>
+      </li>
+      <li>
+        <stat>MoveSpeed</stat>
+        <baseline>4.6</baseline>
+      </li>
     </stats>
   </AdaptivePriorities.WorkTypeStatsDef>
 

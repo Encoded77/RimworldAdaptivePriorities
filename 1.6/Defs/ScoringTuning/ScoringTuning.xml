@@ -6,9 +6,11 @@
   <AdaptivePriorities.ScoringTuningDef>
     <defName>DefaultScoringTuning</defName>
     <label>default scoring tuning</label>
-    <skillWeight>0.7</skillWeight>
+    <skillWeight>1.0</skillWeight>
     <minorPassionBonus>0.15</minorPassionBonus>
     <majorPassionBonus>0.3</majorPassionBonus>
+    <badPassionPenalty>0.1</badPassionPenalty>
+    <maxPassionBonus>0.45</maxPassionBonus>
     <noSkillWorkScore>0.5</noSkillWorkScore>
     <relativeWeight>0.5</relativeWeight>
     <qualityWeight>0.5</qualityWeight>

@@ -39,17 +39,25 @@
     <assignEveryone>true</assignEveryone>
   </AdaptivePriorities.WorkTypePolicyDef>
 
+  <!-- Everyone hauls, but hauling is pure legwork - a fast pawn with a big pack moves several times what
+       a slow one does (see HaulingStats). assignEveryone would flatten that by pinning everyone to
+       urgency, so maxWorkersFraction 1 + scoreCutoff 0 assign everyone while the priority pivots on
+       aptitude. Urgency is low because Hauling is 18th of 20 in the vanilla work order and so already
+       yields at equal priority. -->
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
     <defName>HaulingPolicy</defName>
     <workTypeDef>Hauling</workTypeDef>
-    <urgency>1</urgency>
-    <assignEveryone>true</assignEveryone>
+    <urgency>0.35</urgency>
+    <maxWorkersFraction>1</maxWorkersFraction>
+    <scoreCutoff>0</scoreCutoff>
   </AdaptivePriorities.WorkTypePolicyDef>
 
+  <!-- Everyone cleans, but not ahead of their own specialty. Cleaning is 19th of 20 in the vanilla work
+       order, so urgency only decides which jobs it can jump ahead of. -->
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
     <defName>CleaningPolicy</defName>
     <workTypeDef>Cleaning</workTypeDef>
-    <urgency>1</urgency>
+    <urgency>0.4</urgency>
     <assignEveryone>true</assignEveryone>
   </AdaptivePriorities.WorkTypePolicyDef>
 
@@ -63,12 +71,18 @@
 
   <!-- Critical specialist jobs: top urgency for the best pawns, above what naturalPriority
        would derive. -->
-  <!-- pinPriority: a competent doctor must stay at priority 1 -->
+  <!-- pinPriority: a competent doctor must stay at priority 1. It also puts every assigned doctor on
+       exactly urgency, so who gets assigned is the only thing separating a surgeon from an enthusiast -
+       hence the tight share. minWorkers 2 is the small-colony guard: maxWorkers is
+       max(minWorkers, ceil(share x capable)), so the share can never leave fewer than two doctors -
+       one to be hurt, one to tend them. -->
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
     <defName>DoctorPolicy</defName>
     <workTypeDef>Doctor</workTypeDef>
     <urgency>1</urgency>
     <pinPriority>true</pinPriority>
+    <minWorkers>2</minWorkers>
+    <maxWorkersFraction>0.15</maxWorkersFraction>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Moderate-urgency specialists. NOT urgency 1: with the pivot priority formula, urgency 1 on

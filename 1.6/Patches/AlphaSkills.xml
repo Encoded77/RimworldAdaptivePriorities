@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- Score overrides for Alpha Skills' passions, added only when Alpha Skills is active (matched by
+       its About.xml <name>, not packageId), so we never reference a passion that wouldn't exist.
+
+       HOW THESE APPLY. A skill carries one passion def at a time, and PassionScoreService scores
+       whichever it currently holds. Alpha's "triggered" passions are two separate defs: a persistent
+       base form, and an isTriggered _Active form with a higher learn rate that a HediffComp swaps in
+       while its condition holds. Nothing here reads isTriggered - an override on a base form simply
+       stops matching once _Active is swapped in, and _Active then falls to the learn-rate curve.
+
+       So each override is live exactly while its trigger is OFF, and the pawn scores higher still while
+       it is ON (Night: 0.45 by day, 0.60 by night). That is the intent: the base form's own 1x rate
+       reads 0.15, so without an override the hourly recalc would hand the pawn the work at dusk and
+       strip it at dawn. Valuing them across the whole cycle is why the tiers key on the _Active form.
+
+       Unlisted passions need no override - the curve already maps them (Dedicated 1.25x -> 0.23,
+       Forbidden 1.75x -> 0.38, every _Active form). Scale: minor 0.15, major 0.30. -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Alpha Skills</li>
+    </mods>
+    <match Class="PatchOperationAdd">
+      <xpath>/Defs</xpath>
+      <value>
+
+        <!-- ===== GROUP 1: triggered pairs =====
+             Tiers by _Active learn rate: >=2.5x -> 0.45, 1.75-2.25x -> 0.35, 1.5x -> 0.25. The
+             base<->active link lives only in Alpha's HediffComps and naming, not a queryable field,
+             so it cannot be derived generically. Moody is excluded: its triggered states also swing
+             down to apathy, which the curve handles better than one fixed value. -->
+
+        <!-- Tier 1: _Active >= 2.5x. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_VengefulPassion</defName>
+          <passionDef>AS_VengefulPassion</passionDef>
+          <bonus>0.45</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_DrunkenPassion</defName>
+          <passionDef>AS_DrunkenPassion</passionDef>
+          <bonus>0.45</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_NightPassion</defName>
+          <passionDef>AS_NightPassion</passionDef>
+          <bonus>0.45</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Competitive is not a burst passion despite its shape: HediffComp_CompetitivePassion swaps
+             to _Active when another colonist out-skills the pawn, and back to this base form when the
+             pawn is the colony's best at the skill. The base form therefore marks the best worker,
+             whom its 0.25x rate would otherwise read as slightly avoided. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_CompetitivePassion</defName>
+          <passionDef>AS_CompetitivePassion</passionDef>
+          <bonus>0.45</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Tier 2: _Active 1.75-2.25x. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_NomadicPassion</defName>
+          <passionDef>AS_NomadicPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_RainyDayPassion</defName>
+          <passionDef>AS_RainyDayPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_NudistPassion</defName>
+          <passionDef>AS_NudistPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_StonedPassion</defName>
+          <passionDef>AS_StonedPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_IntimatePassion</defName>
+          <passionDef>AS_IntimatePassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Tier 2, DLC-gated. Alpha ships these under 1.6/Mods/<DLC>/, so the passion exists only
+             when that DLC is active. An override naming an absent passion is never matched, so these
+             are inert without it and need no gating of their own. -->
+
+        <!-- Ideology: _Active 2x (pain above 30%). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_PainDrivenPassion</defName>
+          <passionDef>AS_PainDrivenPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Ideology: _Active 1.75x (after a quality-outcome ritual). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_IdeologicalPassion</defName>
+          <passionDef>AS_IdeologicalPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Ideology: _Active 2x (Blindness_Sublime precept, once blinded). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_BlindPassion_Sublime</defName>
+          <passionDef>AS_BlindPassion_Sublime</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Biotech: _Active 2x (hemogen above 50%). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_SanguinePassion</defName>
+          <passionDef>AS_SanguinePassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Biotech: _Active 2x (standing in pollution). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_ToxicPassion</defName>
+          <passionDef>AS_ToxicPassion</passionDef>
+          <bonus>0.35</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Tier 3: _Active 1.5x. Both base forms sit at 0.5x, which the curve reads as 0.03 -
+             effectively no passion. Unlike the bursty pairs, both trigger on a permanent change
+             (blinding the pawn, installing bionics), so _Active is the steady state once reached. -->
+
+        <!-- Ideology: _Active 1.5x (Blindness_Elevated precept, once blinded). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_BlindPassion_Elevated</defName>
+          <passionDef>AS_BlindPassion_Elevated</passionDef>
+          <bonus>0.25</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- Ideology: _Active 1.5x (BodyMod_Approved precept, once given artificial parts). -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_TranshumanistPassion</defName>
+          <passionDef>AS_TranshumanistPassion</passionDef>
+          <bonus>0.25</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- ===== GROUP 2: resting states the curve misreads ===== -->
+
+        <!-- Royalty. Psychic is not a base/_Active pair: HediffComp_PsychicPassion picks one of five
+             forms purely from PsychicSensitivity (<0.5 nullified, <=1 minor, <=1.5 psychic, <=2 major,
+             else critical). A baseline pawn sits at 1.0, making _Minor this passion's resting state -
+             but its 0.5x rate reads as 0.03, hiding a passion the game shows as real. The other four
+             forms map correctly and are left to the curve. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_PsychicPassion_Minor</defName>
+          <passionDef>AS_PsychicPassion_Minor</passionDef>
+          <bonus>0.15</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- ===== GROUP 3: isBad passions that should be neutral =====
+             VSE's isBad means "a bad passion to have" - it gates learning - and PassionScoreService
+             floors it to -badPassionPenalty. That is right for a pawn who dislikes the work, but wrong
+             for passions that only stop the pawn improving: their skill level is untouched, so a
+             master should still get the job. These score 0: no bonus, no penalty, skill alone.
+             AS_TraumaticPassion is deliberately left penalised - that pawn genuinely hates the skill
+             ("hates this skill, but feels compelled to learn"). -->
+
+        <!-- 0x learn rate, but forgetRateFactor is also 0: a Frozen pawn keeps the level they reached. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_FrozenPassion</defName>
+          <passionDef>AS_FrozenPassion</passionDef>
+          <bonus>0</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+        <!-- 0x learn rate, but the pawn "will immensely enjoy all jobs related to it" - the mood payoff
+             makes assigning the work a win, so steering away from it is backwards. -->
+        <AdaptivePriorities.PassionScoreDef>
+          <defName>AP_Score_AS_DuncePassion</defName>
+          <passionDef>AS_DuncePassion</passionDef>
+          <bonus>0</bonus>
+        </AdaptivePriorities.PassionScoreDef>
+
+      </value>
+    </match>
+  </Operation>
+
+</Patch>

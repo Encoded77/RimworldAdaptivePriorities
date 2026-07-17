@@ -22,6 +22,8 @@
   <AP_SkillImportance>Skill importance</AP_SkillImportance>
   <AP_MinorPassionBonus>Minor passion bonus</AP_MinorPassionBonus>
   <AP_MajorPassionBonus>Major passion bonus</AP_MajorPassionBonus>
+  <AP_BadPassionPenalty>Bad passion penalty</AP_BadPassionPenalty>
+  <AP_MaxPassionBonus>Max passion bonus</AP_MaxPassionBonus>
   <AP_RewardSpecialists>Reward specialists</AP_RewardSpecialists>
   <AP_InspirationBoost>Boost inspired pawns</AP_InspirationBoost>
   <AP_AssignOpposed>Assign disliked work when needed</AP_AssignOpposed>

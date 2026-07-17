@@ -12,14 +12,30 @@ namespace AdaptivePriorities
 
         public static ScoringTuningDef Active => cached ??= DefDatabase<ScoringTuningDef>.AllDefsListForReading.FirstOrFallback();
 
-        /// <summary>Weight of the (0..1) average relevant skill level in the final score.</summary>
-        public float skillWeight = 0.7f;
+        /// <summary>
+        /// Weight of the (0..1) average relevant skill level in the final score; at 1 the skill term is
+        /// the average level as a fraction of 20. Also sets the scale everything else is read against:
+        /// a passion bonus of B is worth B x 20 / skillWeight skill levels.
+        /// </summary>
+        public float skillWeight = 1f;
 
         /// <summary>Flat bonus for a minor passion in the work type's best relevant skill.</summary>
         public float minorPassionBonus = 0.15f;
 
         /// <summary>Flat bonus for a major passion in the work type's best relevant skill.</summary>
         public float majorPassionBonus = 0.3f;
+
+        /// <summary>How far below no-passion an undesirable (isBad) modded passion scores — VSE apathy,
+        /// Alpha dunce, etc. 0 = neutral. Vanilla passions are unaffected.</summary>
+        public float badPassionPenalty = 0.1f;
+
+        /// <summary>
+        /// Ceiling on the bonus the modded-passion learn-rate curve may produce. The curve extrapolates
+        /// unclamped, so without this VSE_Critical (3x) reads 0.75 and out-values the whole skill term,
+        /// letting an unskilled enthusiast outrank a master. Keep below skillWeight. Explicit
+        /// PassionScoreDefs are deliberate data and are not capped.
+        /// </summary>
+        public float maxPassionBonus = 0.45f;
 
         /// <summary>Score for work types with no relevant skills (Hauling, Cleaning, Firefighter...).</summary>
         public float noSkillWorkScore = 0.5f;

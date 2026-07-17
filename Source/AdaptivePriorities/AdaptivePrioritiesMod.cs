@@ -80,7 +80,7 @@ namespace AdaptivePriorities
             Text.Font = GameFont.Small;
 
             var d = ScoringTuningDef.Active;
-            FloatRow(l, "AP_SkillImportance".Translate(), "skillWeight", d.skillWeight, 0f, 1f);
+            FloatRow(l, "AP_SkillImportance".Translate(), "skillWeight", d.skillWeight, 0f, 2f);
             FloatRow(l, "AP_MinorPassionBonus".Translate(), "minorPassionBonus", d.minorPassionBonus, 0f, 1f);
             FloatRow(l, "AP_MajorPassionBonus".Translate(), "majorPassionBonus", d.majorPassionBonus, 0f, 1f);
             FloatRow(l, "AP_RewardSpecialists".Translate(), "qualityWeight", d.qualityWeight, 0f, 1f);
@@ -89,6 +89,8 @@ namespace AdaptivePriorities
 
             if (Settings.advancedMode)
             {
+                FloatRow(l, "AP_BadPassionPenalty".Translate(), "badPassionPenalty", d.badPassionPenalty, 0f, 1f);
+                FloatRow(l, "AP_MaxPassionBonus".Translate(), "maxPassionBonus", d.maxPassionBonus, 0f, 1f);
                 FloatRow(l, "AP_UnskilledBaseline".Translate(), "noSkillWorkScore", d.noSkillWorkScore, 0f, 1f);
                 FloatRow(l, "AP_CompareToBest".Translate(), "relativeWeight", d.relativeWeight, 0f, 1f);
                 FloatRow(l, "AP_UseWorkSpeed".Translate(), "workStatWeight", d.workStatWeight, 0f, 1f);

@@ -15,6 +15,8 @@ namespace AdaptivePriorities.Core
         public static float SkillWeight => F("skillWeight", Def.skillWeight);
         public static float MinorPassionBonus => F("minorPassionBonus", Def.minorPassionBonus);
         public static float MajorPassionBonus => F("majorPassionBonus", Def.majorPassionBonus);
+        public static float BadPassionPenalty => F("badPassionPenalty", Def.badPassionPenalty);
+        public static float MaxPassionBonus => F("maxPassionBonus", Def.maxPassionBonus);
         public static float NoSkillWorkScore => F("noSkillWorkScore", Def.noSkillWorkScore);
         public static float RelativeWeight => F("relativeWeight", Def.relativeWeight);
         public static float QualityWeight => F("qualityWeight", Def.qualityWeight);
