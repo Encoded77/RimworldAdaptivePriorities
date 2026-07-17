@@ -12,6 +12,9 @@ namespace AdaptivePriorities.Core
         public float scoreCutoff;
         public bool pinPriority;
         public bool priorityFalloff;
+        public ExternalOffloadMode externalOffload;
+        public int externalBackup;
+        public float externalUptimeFactor;
     }
 
     /// <summary>
@@ -27,6 +30,9 @@ namespace AdaptivePriorities.Core
         public const string ScoreCutoffKey = "scoreCutoff";
         public const string PinPriorityKey = "pinPriority";
         public const string PriorityFalloffKey = "priorityFalloff";
+        public const string ExternalOffloadKey = "externalOffload";
+        public const string ExternalBackupKey = "externalBackup";
+        public const string ExternalUptimeKey = "externalUptimeFactor";
 
         public static EffectiveWorkPolicy For(WorkTypeDef workType)
         {
@@ -43,6 +49,9 @@ namespace AdaptivePriorities.Core
                     scoreCutoff = def.scoreCutoff,
                     pinPriority = def.pinPriority,
                     priorityFalloff = def.priorityFalloff,
+                    externalOffload = def.externalOffload,
+                    externalBackup = def.externalBackup,
+                    externalUptimeFactor = def.externalUptimeFactor,
                 }
                 : new EffectiveWorkPolicy
                 {
@@ -53,6 +62,9 @@ namespace AdaptivePriorities.Core
                     scoreCutoff = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(ScoreCutoffKey, workType), def.scoreCutoff),
                     pinPriority = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(PinPriorityKey, workType), def.pinPriority),
                     priorityFalloff = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(PriorityFalloffKey, workType), def.priorityFalloff),
+                    externalOffload = (ExternalOffloadMode)s.GetInt(AdaptivePrioritiesSettings.PolicyKey(ExternalOffloadKey, workType), (int)def.externalOffload),
+                    externalBackup = s.GetInt(AdaptivePrioritiesSettings.PolicyKey(ExternalBackupKey, workType), def.externalBackup),
+                    externalUptimeFactor = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(ExternalUptimeKey, workType), def.externalUptimeFactor),
                 };
 
             // Coverage guarantee relaxed: minWorkers 0 makes the assigner's Max/rank checks degrade to

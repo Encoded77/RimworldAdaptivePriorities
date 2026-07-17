@@ -212,6 +212,9 @@ namespace AdaptivePriorities.Debug
                 sb.AppendLine($"    policy: urgency={p.urgency:0.00} cutoff={p.scoreCutoff:0.00} minWorkers={p.minWorkers} "
                               + $"maxFrac={p.maxWorkersFraction:0.00} everyone={YN(p.assignEveryone)} pin={YN(p.pinPriority)} falloff={YN(p.priorityFalloff)}");
                 sb.AppendLine($"    capable={any.capableCount} maxWorkers={any.maxWorkers} colonyBest={any.colonyBest:0.000} stats={statNames}");
+                if (any.externalMode != ExternalOffloadMode.Off && any.externalCapacity > 0f)
+                    sb.AppendLine($"    external: capacity={any.externalCapacity:0.00} x uptime {any.externalUptime:0.##} "
+                                  + $"-> -{any.externalReduction} workers (mode={any.externalMode}, floor={any.externalFloor})");
                 sb.AppendLine("    rank pawn         cur prop    raw   blend  avgLvl  passion                          statF  insp   norm  flg  reason");
 
                 foreach (var r in group.OrderBy(r => r.rank))
@@ -258,7 +261,12 @@ namespace AdaptivePriorities.Debug
             {
                 if (!group.Any(t => t.proposed > 0))
                 {
-                    sb.AppendLine($"  NOT COVERED: {group.Key.defName} - {group.Count()} capable colonist(s) but none assigned.");
+                    var first = group.First();
+                    if (first.externalReduction > 0)
+                        sb.AppendLine($"  OFFLOADED: {group.Key.defName} - no colonist assigned; "
+                                      + $"{first.externalCapacity:0.0} external capacity (mode {first.externalMode}).");
+                    else
+                        sb.AppendLine($"  NOT COVERED: {group.Key.defName} - {group.Count()} capable colonist(s) but none assigned.");
                     anyNote = true;
                 }
             }

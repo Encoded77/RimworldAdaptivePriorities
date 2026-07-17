@@ -18,6 +18,7 @@ namespace AdaptivePriorities.UI.Settings
             General,
             Scoring,
             WorkTypes,
+            ExternalWorkers,
             Passions,
         }
 
@@ -56,6 +57,9 @@ namespace AdaptivePriorities.UI.Settings
                 case SettingsTab.WorkTypes:
                     WorkTypesTab.Draw(inner);
                     break;
+                case SettingsTab.ExternalWorkers:
+                    ExternalWorkersTab.Draw(inner);
+                    break;
                 case SettingsTab.Passions:
                     PassionsTab.Draw(inner);
                     break;
@@ -67,6 +71,7 @@ namespace AdaptivePriorities.UI.Settings
             new TabRecord("AP_TabGeneral".Translate(), () => current = SettingsTab.General, () => current == SettingsTab.General),
             new TabRecord("AP_TabScoring".Translate(), () => current = SettingsTab.Scoring, () => current == SettingsTab.Scoring),
             new TabRecord("AP_TabWorkTypes".Translate(), () => current = SettingsTab.WorkTypes, () => current == SettingsTab.WorkTypes),
+            new TabRecord("AP_TabExternalWorkers".Translate(), () => current = SettingsTab.ExternalWorkers, () => current == SettingsTab.ExternalWorkers),
             new TabRecord("AP_TabPassions".Translate(), () => current = SettingsTab.Passions, () => current == SettingsTab.Passions),
         };
     }

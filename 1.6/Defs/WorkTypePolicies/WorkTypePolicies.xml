@@ -17,12 +17,17 @@
     <scoreCutoff>0.35</scoreCutoff>
   </AdaptivePriorities.WorkTypePolicyDef>
 
+  <!-- externalOffload Off on the emergency / self-care work below: these must never have their colonist
+       coverage thinned just because an automaton can also do them (a firefighter drone exists), so a lone
+       automaton can't leave the colony a fire or a patient short. Editable per work type in the settings. -->
+
   <!-- Critical, everyone does it, top priority. -->
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
     <defName>FirefighterPolicy</defName>
     <workTypeDef>Firefighter</workTypeDef>
     <urgency>1</urgency>
     <assignEveryone>true</assignEveryone>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
@@ -30,6 +35,7 @@
     <workTypeDef>Patient</workTypeDef>
     <urgency>1</urgency>
     <assignEveryone>true</assignEveryone>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
@@ -37,6 +43,7 @@
     <workTypeDef>BasicWorker</workTypeDef>
     <urgency>1</urgency>
     <assignEveryone>true</assignEveryone>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Everyone hauls, but hauling is pure legwork - a fast pawn with a big pack moves several times what
@@ -50,15 +57,21 @@
     <urgency>0.35</urgency>
     <maxWorkersFraction>1</maxWorkersFraction>
     <scoreCutoff>0</scoreCutoff>
+    <externalBackup>2</externalBackup>
+    <externalUptimeFactor>1.5</externalUptimeFactor>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Everyone cleans, but not ahead of their own specialty. Cleaning is 19th of 20 in the vanilla work
-       order, so urgency only decides which jobs it can jump ahead of. -->
+       order, so urgency only decides which jobs it can jump ahead of.
+       externalBackup 0: cleaning needs no colonist backup - if the drones stop, filth is harmless to
+       leave until the next recalc. Uptime 1.5 for the same full-time reason as Hauling. -->
   <AdaptivePriorities.WorkTypePolicyDef ParentName="AP_PolicyBase">
     <defName>CleaningPolicy</defName>
     <workTypeDef>Cleaning</workTypeDef>
     <urgency>0.4</urgency>
     <assignEveryone>true</assignEveryone>
+    <externalBackup>0</externalBackup>
+    <externalUptimeFactor>3</externalUptimeFactor>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Everyone, but lower urgency: resting is important, not a drop-everything job. -->
@@ -67,6 +80,7 @@
     <workTypeDef>PatientBedRest</workTypeDef>
     <urgency>0.33</urgency>
     <assignEveryone>true</assignEveryone>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Critical specialist jobs: top urgency for the best pawns, above what naturalPriority
@@ -83,6 +97,7 @@
     <pinPriority>true</pinPriority>
     <minWorkers>2</minWorkers>
     <maxWorkersFraction>0.15</maxWorkersFraction>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Moderate-urgency specialists. NOT urgency 1: with the pivot priority formula, urgency 1 on
@@ -99,6 +114,7 @@
     <defName>ChildcarePolicy</defName>
     <workTypeDef>Childcare</workTypeDef>
     <urgency>0.75</urgency>
+    <externalOffload>Off</externalOffload>
   </AdaptivePriorities.WorkTypePolicyDef>
 
   <!-- Research: vanilla's naturalPriority (100) would derive to ~priority 8 (never done), while

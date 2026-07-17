@@ -27,5 +27,9 @@ namespace AdaptivePriorities.Core
         public static bool CoverageGuaranteeEnabled => B("coverageGuaranteeEnabled", Def.coverageGuaranteeEnabled);
         public static bool InspirationBonusEnabled => B("inspirationBonusEnabled", Def.inspirationBonusEnabled);
         public static bool AssignOpposedWhenNeeded => B("assignOpposedWhenNeeded", Def.assignOpposedWhenNeeded);
+
+        /// <summary>Whether external workers of this category (mechs, drones...) count toward offloading. Default on.</summary>
+        public static bool AccountForCategory(string category) =>
+            Settings != null ? Settings.GetBool(AdaptivePrioritiesSettings.AccountKey(category), true) : true;
     }
 }

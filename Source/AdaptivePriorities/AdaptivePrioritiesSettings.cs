@@ -28,6 +28,9 @@ namespace AdaptivePriorities
         /// <summary>Override key for a modded (VSE/Alpha) passion's score bonus.</summary>
         public static string PassionKey(string passionDefName) => "passionBonus@" + passionDefName;
 
+        /// <summary>Toggle key for accounting for an external-worker category (mechs, drones...).</summary>
+        public static string AccountKey(string category) => "accountFor@" + category;
+
         public bool IsOverridden(string key) =>
             floatOverrides.ContainsKey(key) || boolOverrides.ContainsKey(key) || intOverrides.ContainsKey(key);
 

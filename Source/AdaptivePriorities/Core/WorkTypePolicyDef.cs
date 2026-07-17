@@ -4,6 +4,18 @@ using Verse;
 namespace AdaptivePriorities
 {
     /// <summary>
+    /// How external workers (mechs, drones) reduce the colonist demand for a work type. Off ignores them;
+    /// Reduce subtracts their capacity but keeps a backup floor of colonists; Full offloads hard, down to
+    /// zero colonists.
+    /// </summary>
+    public enum ExternalOffloadMode
+    {
+        Off,
+        Reduce,
+        Full,
+    }
+
+    /// <summary>
     /// Colony-wide assignment policy for one work type: how important the job is, whether every capable
     /// pawn does it or only the best few, and the minimum worker count for coverage. Pure XML data. A
     /// def with an empty workTypeDef is the default for work types nothing else covers.
@@ -36,6 +48,21 @@ namespace AdaptivePriorities
         /// life-critical work (Doctor) so it never sinks below chore work on a wide priority range.
         /// </summary>
         public bool pinPriority;
+
+        /// <summary>
+        /// How external workers (mechs, drones) reduce colonist demand for this work type. Reduce by
+        /// default; emergency/self-care work ships Off so a lone drone can't thin its coverage.
+        /// </summary>
+        public ExternalOffloadMode externalOffload = ExternalOffloadMode.Reduce;
+
+        /// <summary>Colonists always kept on this work type under Reduce, however much external capacity exists.</summary>
+        public int externalBackup = 1;
+
+        /// <summary>
+        /// Multiplier on external capacity before it is floored into a colonist-equivalent reduction: a
+        /// full-time automaton is worth more than one colonist on fragmented menial work. 1 = one-for-one.
+        /// </summary>
+        public float externalUptimeFactor = 1f;
 
         private static Dictionary<WorkTypeDef, WorkTypePolicyDef> byWorkType;
         private static float maxNaturalPriority;
@@ -70,15 +97,24 @@ namespace AdaptivePriorities
         /// Work types without an explicit def (typically modded) get a policy derived from their own
         /// WorkTypeDef: urgency from naturalPriority (normalized against the highest loaded), and
         /// everyone-assignment when the job has no relevant skills. An explicit def always wins.
+        ///
+        /// External-worker defaults (the larger backup a quality craft keeps, say) come from an optional
+        /// <see cref="ExternalWorkerDefaults"/> mod extension on the WorkTypeDef, so a mod adding
+        /// quality-craft work types (subjobs derived from Crafting/Smithing...) can mark them the same way
+        /// vanilla crafts are marked, without any code here. Absent extension = the plain class defaults.
         /// </summary>
         private static WorkTypePolicyDef Derive(WorkTypeDef workType)
         {
+            var ext = workType.GetModExtension<ExternalWorkerDefaults>();
             return new WorkTypePolicyDef
             {
                 defName = "AP_Derived_" + workType.defName,
                 workTypeDef = workType.defName,
                 urgency = UnityEngine.Mathf.Clamp01(workType.naturalPriority / maxNaturalPriority),
                 assignEveryone = workType.relevantSkills.NullOrEmpty(),
+                externalOffload = ext?.externalOffload ?? ExternalOffloadMode.Reduce,
+                externalBackup = ext?.externalBackup ?? 1,
+                externalUptimeFactor = ext?.externalUptimeFactor ?? 1f,
             };
         }
     }

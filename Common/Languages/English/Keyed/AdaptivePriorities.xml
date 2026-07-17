@@ -13,6 +13,7 @@
   <AP_TabGeneral>General</AP_TabGeneral>
   <AP_TabScoring>Scoring</AP_TabScoring>
   <AP_TabWorkTypes>Work types</AP_TabWorkTypes>
+  <AP_TabExternalWorkers>External workers</AP_TabExternalWorkers>
   <AP_TabPassions>Passions</AP_TabPassions>
   <AP_TipDefault>Default: {0}</AP_TipDefault>
   <AP_RevertTip>Reset to default.</AP_RevertTip>
@@ -80,6 +81,30 @@
   <AP_BadPassionPenaltyTip>How far below no-passion an undesirable modded passion (apathy, natural ineptitude...) scores by default. 0 = neutral. Vanilla passions are unaffected.</AP_BadPassionPenaltyTip>
   <AP_MaxPassionBonus>Max passion bonus</AP_MaxPassionBonus>
   <AP_MaxPassionBonusTip>Ceiling on the bonus a modded passion's learn rate can produce, so a 3x enthusiasm can't out-value skill itself. Values you set yourself on the sliders above are not capped.</AP_MaxPassionBonusTip>
+
+  <!-- Settings: external workers tab -->
+  <AP_ExtIntro>Take mechs and drones into account when assigning colonist work: where automatons can cover a job, colonists are pulled off it and freed for work only they can do.</AP_ExtIntro>
+  <AP_AccountForMechs>Account for mechanoids</AP_AccountForMechs>
+  <AP_AccountForMechsTip>Count your work mechs (Biotech lifters, cleansweepers, constructoids... and mechs from other mods) as workers, reducing how many colonists get the jobs they can do. Turn off to ignore mechs entirely.</AP_AccountForMechsTip>
+  <AP_AccountForDrones>Account for drones</AP_AccountForDrones>
+  <AP_AccountForDronesTip>Count utility drones (Vanilla Quests Expanded - Drone Factory) as workers, reducing how many colonists get the jobs they cover. Turn off to ignore drones entirely.</AP_AccountForDronesTip>
+  <AP_AccountForGeneric>Account for {0}</AP_AccountForGeneric>
+  <AP_AccountForGenericTip>Count {0} as external workers, reducing how many colonists get the jobs they can do.</AP_AccountForGenericTip>
+  <AP_ExtOffload>Offload</AP_ExtOffload>
+  <AP_ExtOffloadTip>How external workers change this job for colonists:\n- Off: ignore automatons here.\n- Reduce: hand some of the work to automatons but always keep the backup number of colonists.\n- Full: hand the job over entirely when automatons can cover it (no colonist backup).\n\nEither way, the colonists removed are always the worst-suited ones, so your best workers keep the job.</AP_ExtOffloadTip>
+  <AP_ExtModeOff>Off</AP_ExtModeOff>
+  <AP_ExtModeReduce>Reduce</AP_ExtModeReduce>
+  <AP_ExtModeFull>Full</AP_ExtModeFull>
+  <AP_ExtModeOffNote>Automatons are ignored for this work type.</AP_ExtModeOffNote>
+  <AP_ExtBackup>Backup</AP_ExtBackup>
+  <AP_ExtBackupTip>Colonists always kept on this job under Reduce, no matter how many automatons exist — a safety net if the automatons go offline. 0 = allow full offload.</AP_ExtBackupTip>
+  <AP_ExtBackupIgnored>Only used in Reduce mode (Off ignores automatons; Full keeps no backup).</AP_ExtBackupIgnored>
+  <AP_ExtUptime>Automaton uptime factor</AP_ExtUptime>
+  <AP_ExtUptimeTip>How many colonists one full-time automaton is worth here. Above 1 because an automaton works continuously while a colonist splits their day across many jobs, sleep and breaks. Capacity is multiplied by this, then rounded down.</AP_ExtUptimeTip>
+  <AP_ExtUptimeIgnored>Ignored while Offload is Off.</AP_ExtUptimeIgnored>
+  <AP_ExtNoCategories>Turn on 'Account for mechanoids' or 'Account for drones' above for this to do anything.</AP_ExtNoCategories>
+  <AP_ExtLiveNoCapacity>Right now: no external workers can do this on the current map.</AP_ExtLiveNoCapacity>
+  <AP_ExtLiveCapacity>Right now: {0} capacity x {1} uptime — removing {2} colonist(s), keeping at least {3}.</AP_ExtLiveCapacity>
 
   <!-- Live math lines -->
   <AP_LivePassionLevels>Right now: worth about {0} skill levels.</AP_LivePassionLevels>

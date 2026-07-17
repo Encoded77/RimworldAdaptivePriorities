@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <!-- Mapping for Vanilla Quests Expanded - Drone Factory. Its drones are ordinary pawns
+       (not mechanoids), so the generic mech discovery can't see them; this data-driven map is how they
+       count as external workers.
+       The firefighter drone is excluded: it auto-extinguishes via a
+       proximity comp, not the Firefighter work type (which is offload-Off by default anyway). -->
+
+  <AdaptivePriorities.ExternalWorkerSourceDef MayRequire="vanillaquestsexpanded.dronefactory">
+    <defName>AP_ExtSource_VQE_HaulerDrone</defName>
+    <category>Drones</category>
+    <thingDef>VQE_HaulerDrone</thingDef>
+    <workTypeDefs>
+      <li>Hauling</li>
+    </workTypeDefs>
+  </AdaptivePriorities.ExternalWorkerSourceDef>
+
+  <AdaptivePriorities.ExternalWorkerSourceDef MayRequire="vanillaquestsexpanded.dronefactory">
+    <defName>AP_ExtSource_VQE_CleanerDrone</defName>
+    <category>Drones</category>
+    <thingDef>VQE_CleanerDrone</thingDef>
+    <workTypeDefs>
+      <li>Cleaning</li>
+    </workTypeDefs>
+  </AdaptivePriorities.ExternalWorkerSourceDef>
+
+  <AdaptivePriorities.ExternalWorkerSourceDef MayRequire="vanillaquestsexpanded.dronefactory">
+    <defName>AP_ExtSource_VQE_FarmingDrone</defName>
+    <category>Drones</category>
+    <thingDef>VQE_FarmingDrone</thingDef>
+    <workTypeDefs>
+      <li>Growing</li>
+      <li>PlantCutting</li>
+    </workTypeDefs>
+  </AdaptivePriorities.ExternalWorkerSourceDef>
+
+  <AdaptivePriorities.ExternalWorkerSourceDef MayRequire="vanillaquestsexpanded.dronefactory">
+    <defName>AP_ExtSource_VQE_MinerDrone</defName>
+    <category>Drones</category>
+    <thingDef>VQE_MinerDrone</thingDef>
+    <workTypeDefs>
+      <li>Mining</li>
+    </workTypeDefs>
+  </AdaptivePriorities.ExternalWorkerSourceDef>
+
+</Defs>

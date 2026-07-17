@@ -31,6 +31,13 @@ namespace AdaptivePriorities.Core
         public bool assigned;
         public bool cellLocked;
 
+        /// <summary>External-worker capacity for this work type, before the uptime factor; 0 when none applies.</summary>
+        public float externalCapacity;
+        public float externalUptime;
+        public int externalReduction;
+        public int externalFloor;
+        public ExternalOffloadMode externalMode;
+
         /// <summary>Priority position before mapping onto the range; unset when not assigned.</summary>
         public float normalized;
 
@@ -91,6 +98,10 @@ namespace AdaptivePriorities.Core
             var workTypes = WorkTypeDiscoveryService.GetAllWorkTypes();
             var colonists = WorkTypeDiscoveryService.GetColonistsOnMap(map);
 
+            // Weighted external-worker (mech/drone) capacity per work type, sampled once. Usually empty,
+            // so the no-automaton colony pays almost nothing.
+            var externalCapacityByWorkType = ExternalWorkerService.BuildCapacity(map);
+
             // Only able-bodied, unlocked pawns take part. Excluded pawns get no proposal entry, so
             // their existing priorities are left untouched.
             var proposal = new Dictionary<Pawn, Dictionary<WorkTypeDef, int>>();
@@ -132,9 +143,20 @@ namespace AdaptivePriorities.Core
                     capable[i] = (capable[i].pawn, PawnPriorityScorer.BlendWithColonyBest(capable[i].score, colonyBest), capable[i].opposed, capable[i].inspired, capable[i].breakdown);
                 capable.SortByDescending(c => (c.opposed ? 0f : 10f) + c.score);
 
-                int maxWorkers = policy.assignEveryone
+                // External workers reduce colonist demand: subtract their floored capacity from the worker
+                // counts, but never below the work type's backup floor (0 under Full). Applied only when a
+                // reduction actually results, so a colony with no automatons is unaffected.
+                var ext = ExternalWorkerService.AdjustmentFor(workType, externalCapacityByWorkType);
+                int baseMax = policy.assignEveryone
                     ? capable.Count
                     : Mathf.Max(policy.minWorkers, Mathf.CeilToInt(policy.maxWorkersFraction * capable.Count));
+                int maxWorkers = baseMax;
+                int effMinWorkers = policy.minWorkers;
+                if (ext.reduction > 0)
+                {
+                    maxWorkers = Mathf.Max(ext.floor, baseMax - ext.reduction);
+                    effMinWorkers = Mathf.Max(ext.floor, policy.minWorkers - ext.reduction);
+                }
 
                 for (int rank = 0; rank < capable.Count; rank++)
                 {
@@ -142,9 +164,9 @@ namespace AdaptivePriorities.Core
 
                     // Opposed pawns are assigned only when the coverage guarantee has no willing pawn
                     // left, and only if the player allows opposed-work assignment at all.
-                    bool opposedCoverage = ScoringConfig.AssignOpposedWhenNeeded && rank < policy.minWorkers;
+                    bool opposedCoverage = ScoringConfig.AssignOpposedWhenNeeded && rank < effMinWorkers;
                     bool withinMaxWorkers = rank < maxWorkers;
-                    bool meetsBar = policy.assignEveryone || score >= policy.scoreCutoff || rank < policy.minWorkers;
+                    bool meetsBar = policy.assignEveryone || score >= policy.scoreCutoff || rank < effMinWorkers;
                     bool willing = !opposed || opposedCoverage;
                     bool assigned = withinMaxWorkers && meetsBar && willing;
 
@@ -202,13 +224,18 @@ namespace AdaptivePriorities.Core
                         inspired = inspired,
                         assigned = assigned,
                         cellLocked = cellLocked,
+                        externalCapacity = ext.capacity,
+                        externalUptime = ext.uptime,
+                        externalReduction = ext.reduction,
+                        externalFloor = ext.floor,
+                        externalMode = ext.mode,
                         normalized = normalizedTrace,
                         falloff = falloffTrace,
                         proposed = priority,
                         current = pawn.workSettings?.GetPriority(workType) ?? -1,
                         reason = trace == null
                             ? null
-                            : DescribeDecision(policy, score, rank, maxWorkers, opposed, opposedCoverage,
+                            : DescribeDecision(policy, effMinWorkers, ext, score, rank, maxWorkers, opposed, opposedCoverage,
                                                withinMaxWorkers, meetsBar, willing, inspired, cellLocked),
                     });
                 }
@@ -221,7 +248,8 @@ namespace AdaptivePriorities.Core
         /// Names the single rule that decided a cell, mirroring the branch order of the assignment
         /// condition above. Debug-only: allocates, so it is called only while tracing.
         /// </summary>
-        private static string DescribeDecision(EffectiveWorkPolicy policy, float score, int rank, int maxWorkers,
+        private static string DescribeDecision(EffectiveWorkPolicy policy, int effMinWorkers, ExternalAdjustment ext,
+                                               float score, int rank, int maxWorkers,
                                                bool opposed, bool opposedCoverage, bool withinMaxWorkers,
                                                bool meetsBar, bool willing, bool inspired, bool cellLocked)
         {
@@ -231,7 +259,8 @@ namespace AdaptivePriorities.Core
             string suffix = inspired ? " +inspired(urgency floor)" : "";
 
             if (!withinMaxWorkers)
-                return $"cut: rank {rank + 1} over maxWorkers {maxWorkers}";
+                return $"cut: rank {rank + 1} over maxWorkers {maxWorkers}"
+                       + (ext.reduction > 0 ? $" (-{ext.reduction} external)" : "");
             if (!meetsBar)
                 return $"cut: blend {score:0.000} under cutoff {policy.scoreCutoff:0.00}";
             if (!willing)
@@ -242,10 +271,10 @@ namespace AdaptivePriorities.Core
             if (policy.assignEveryone)
                 return "kept: everyone-job" + suffix;
             if (opposed)
-                return $"kept: opposed, taken for coverage (rank {rank + 1} within minWorkers {policy.minWorkers})" + suffix;
+                return $"kept: opposed, taken for coverage (rank {rank + 1} within minWorkers {effMinWorkers})" + suffix;
             if (score >= policy.scoreCutoff)
                 return $"kept: blend {score:0.000} over cutoff {policy.scoreCutoff:0.00}" + suffix;
-            return $"kept: coverage (rank {rank + 1} within minWorkers {policy.minWorkers})" + suffix;
+            return $"kept: coverage (rank {rank + 1} within minWorkers {effMinWorkers})" + suffix;
         }
     }
 }

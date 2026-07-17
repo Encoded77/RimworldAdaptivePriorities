@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- Marks the vanilla quality-crafting work types so their derived policy keeps a larger colonist
+       backup (externalBackup 2): an external crafter (a Fabricor) then supplements the colony's crafters
+       rather than replacing them - the best pawns stay on the bench for quality while the mech absorbs
+       volume.
+   -->
+  <Operation Class="PatchOperationAddModExtension">
+    <xpath>Defs/WorkTypeDef[defName="Crafting" or defName="Smithing" or defName="Tailoring" or defName="Art"]</xpath>
+    <value>
+      <li Class="AdaptivePriorities.ExternalWorkerDefaults">
+        <externalBackup>3</externalBackup>
+      </li>
+    </value>
+  </Operation>
+
+</Patch>
