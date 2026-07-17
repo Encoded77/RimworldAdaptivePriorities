@@ -7,40 +7,85 @@
   <AP_Optimize>Optimize</AP_Optimize>
   <AP_RecalculateDone>{0} priorities updated.</AP_RecalculateDone>
 
-  <!-- Settings: automatic assignment -->
-  <AP_AutoHeader>Automatic assignment</AP_AutoHeader>
-  <AP_AutoInterval>Reassign every {0} hour(s)</AP_AutoInterval>
-  <AP_AutoIntervalTip>How often work is reassigned. Longer is calmer — priorities won't chase short-lived events like a brief mental break. 24 = once per day.</AP_AutoIntervalTip>
-
-  <!-- Settings: general -->
+  <!-- Settings: shell -->
   <AP_AdvancedMode>Show advanced settings</AP_AdvancedMode>
   <AP_ResetAll>Reset everything</AP_ResetAll>
-  <AP_Reset>Reset</AP_Reset>
+  <AP_TabGeneral>General</AP_TabGeneral>
+  <AP_TabScoring>Scoring</AP_TabScoring>
+  <AP_TabWorkTypes>Work types</AP_TabWorkTypes>
+  <AP_TabPassions>Passions</AP_TabPassions>
+  <AP_TipDefault>Default: {0}</AP_TipDefault>
+  <AP_RevertTip>Reset to default.</AP_RevertTip>
+  <AP_RevertWorkTypeTip>Reset every value of this work type to its default.</AP_RevertWorkTypeTip>
 
-  <!-- Settings: scoring -->
-  <AP_ScoringHeader>Scoring</AP_ScoringHeader>
+  <!-- Settings: general tab -->
+  <AP_ReassignEvery>Reassign interval (hours)</AP_ReassignEvery>
+  <AP_AutoIntervalTip>How often work is reassigned in auto mode. Longer is calmer — priorities won't chase short-lived events like a brief mental break. 24 = once per day.</AP_AutoIntervalTip>
+  <AP_CoverageGuarantee>Guarantee minimum coverage</AP_CoverageGuarantee>
+  <AP_CoverageGuaranteeTip>Keep every work type's minimum number of workers assigned, even when every capable pawn is a poor fit — so a colony never silently loses its only doctor.\n\nTurn this off to relax the guarantee: nobody is force-assigned to work they score badly at, but jobs may go completely uncovered, including Doctor in a small colony.</AP_CoverageGuaranteeTip>
+
+  <!-- Settings: scoring tab -->
   <AP_SkillImportance>Skill importance</AP_SkillImportance>
-  <AP_MinorPassionBonus>Minor passion bonus</AP_MinorPassionBonus>
-  <AP_MajorPassionBonus>Major passion bonus</AP_MajorPassionBonus>
-  <AP_BadPassionPenalty>Bad passion penalty</AP_BadPassionPenalty>
-  <AP_MaxPassionBonus>Max passion bonus</AP_MaxPassionBonus>
+  <AP_SkillImportanceTip>Weight of skill levels in a pawn's score. At 1.00, a level-20 pawn earns a full point from skill alone; higher values make raw skill matter more than everything else. This also sets the scale every bonus is measured against.</AP_SkillImportanceTip>
   <AP_RewardSpecialists>Reward specialists</AP_RewardSpecialists>
+  <AP_RewardSpecialistsTip>How strongly a specialist's fit quality shifts their priority around the work type's importance. At 0 everyone assigned to a job gets the same priority; higher values give the best pawns visibly better priorities.\n\nIgnored for 'Everyone does this' and 'Always top priority' work.</AP_RewardSpecialistsTip>
   <AP_InspirationBoost>Boost inspired pawns</AP_InspirationBoost>
+  <AP_InspirationBoostTip>An inspiration matching a work type's skills boosts that pawn's score and lifts the job's priority, so the inspiration gets used before it expires.</AP_InspirationBoostTip>
   <AP_AssignOpposed>Assign disliked work when needed</AP_AssignOpposed>
+  <AP_AssignOpposedTip>Allow assigning work a pawn's ideoligion opposes when nobody willing can cover it. When off, opposed work is never auto-assigned — even if the job goes undone.</AP_AssignOpposedTip>
   <AP_UnskilledBaseline>Unskilled work baseline</AP_UnskilledBaseline>
+  <AP_UnskilledBaselineTip>Score for work types with no relevant skills (Hauling, Cleaning, Firefighting...). Higher makes unskilled chores compete better against skilled work.</AP_UnskilledBaselineTip>
   <AP_CompareToBest>Compare to colony's best</AP_CompareToBest>
+  <AP_CompareToBestTip>How much a pawn's standing relative to the colony's best counts versus their absolute skill (0 = absolute only, 1 = pure ranking). Relative standing is what spreads results across the whole priority range.</AP_CompareToBestTip>
   <AP_UseWorkSpeed>Use work-speed stats</AP_UseWorkSpeed>
+  <AP_UseWorkSpeedTip>How strongly a work type's aptitude stats (work speed, carrying capacity, move speed...) shift a pawn's score. 0 = ignore stats entirely, 1 = multiply the score by them directly.</AP_UseWorkSpeedTip>
   <AP_OpposedWork>Ideology-opposed work</AP_OpposedWork>
+  <AP_OpposedWorkTip>When an ideoligion-opposed pawn must be assigned for coverage, their fit quality is scaled by this before computing the priority. 0 = opposed assignments always land at the deepest priority.</AP_OpposedWorkTip>
   <AP_InspirationStrength>Inspiration boost strength</AP_InspirationStrength>
+  <AP_InspirationStrengthTip>Flat score bonus while a pawn is inspired for a skill the work type uses. Large by design — inspirations are temporary, so the pawn should win the job while it lasts.</AP_InspirationStrengthTip>
   <AP_InspirationPriority>Inspiration priority</AP_InspirationPriority>
+  <AP_InspirationPriorityTip>Minimum priority urgency (1 = top of the range) for a pawn's inspired work type, so an inspired job jumps the queue regardless of the work type's own importance.</AP_InspirationPriorityTip>
 
-  <!-- Settings: per work type -->
-  <AP_WorkTypesHeader>Work types</AP_WorkTypesHeader>
+  <!-- Settings: work types tab -->
+  <AP_ColWorkType>Work type</AP_ColWorkType>
+  <AP_ColEveryone>Everyone</AP_ColEveryone>
   <AP_Importance>Importance</AP_Importance>
+  <AP_ImportanceTip>How urgent this job is for the colony, independent of who does it: 1.00 maps to the top priority, 0 to the bottom of the range. Specialist quality then shifts individual pawns around this baseline.</AP_ImportanceTip>
   <AP_Everyone>Everyone does this</AP_Everyone>
+  <AP_EveryoneTip>Every capable pawn gets this job at the importance priority (firefighting-style) instead of only the best few. The specialist options are ignored while this is on.</AP_EveryoneTip>
   <AP_MinWorkers>Minimum workers</AP_MinWorkers>
+  <AP_MinWorkersTip>Coverage guarantee: at least this many pawns are assigned even if their scores are poor, as long as anyone capable exists. Also caps how many ideoligion-opposed pawns may be drafted in for coverage.</AP_MinWorkersTip>
   <AP_SpecialistCutoff>Specialist cutoff</AP_SpecialistCutoff>
+  <AP_SpecialistCutoffTip>Capable pawns scoring below this are not assigned at all — specialists only, unless they're needed to meet the minimum workers.</AP_SpecialistCutoffTip>
   <AP_MaxWorkersShare>Max workers (share of colony)</AP_MaxWorkersShare>
+  <AP_MaxWorkersShareTip>Cap on how many colonists may be assigned, as a share of those capable (rounded up, never below the minimum workers).</AP_MaxWorkersShareTip>
   <AP_AlwaysTop>Always top priority</AP_AlwaysTop>
+  <AP_AlwaysTopTip>Pin every assigned worker to exactly the importance priority, ignoring quality spread — for life-critical work (Doctor) so it never sinks below chores on a wide priority range.</AP_AlwaysTopTip>
+  <AP_PriorityFalloff>Priority falloff</AP_PriorityFalloff>
+  <AP_PriorityFalloffTip>Each lower-ranked assigned worker gets one priority step worse than the one above, so the best pawn reliably takes the job first.</AP_PriorityFalloffTip>
+  <AP_IgnoredWhileEveryone>Ignored while 'Everyone does this' is on.</AP_IgnoredWhileEveryone>
+  <AP_IgnoredWhilePinnedOrEveryone>Ignored while 'Always top priority' or 'Everyone does this' is on.</AP_IgnoredWhilePinnedOrEveryone>
+  <AP_IgnoredCoverageOff>Ignored while 'Guarantee minimum coverage' is off (General tab).</AP_IgnoredCoverageOff>
+
+  <!-- Settings: passions tab -->
+  <AP_MinorPassionBonus>Minor passion bonus</AP_MinorPassionBonus>
+  <AP_MinorPassionBonusTip>Flat score bonus for a minor passion in the work type's most relevant skill. Also anchors the curve modded passions are derived from.</AP_MinorPassionBonusTip>
+  <AP_MajorPassionBonus>Major passion bonus</AP_MajorPassionBonus>
+  <AP_MajorPassionBonusTip>Flat score bonus for a major passion in the work type's most relevant skill. Also anchors the curve modded passions are derived from.</AP_MajorPassionBonusTip>
+  <AP_PassionNoneTip>No passion is the baseline: no bonus, no penalty.</AP_PassionNoneTip>
+  <AP_ModdedPassionTip>Score bonus for this passion. Its default is derived from the passion's learn rate ({0}x) and your Minor/Major passion sliders, so it keeps tracking them until you change it here.</AP_ModdedPassionTip>
+  <AP_ModdedPassionTipPinned>Score bonus for this passion. Its default is a fixed value chosen for this specific passion.</AP_ModdedPassionTipPinned>
+  <AP_BadPassionNote>This passion is flagged undesirable — by default it scores below no passion at all, steering work away from it.</AP_BadPassionNote>
+  <AP_BadPassionPenalty>Bad passion penalty</AP_BadPassionPenalty>
+  <AP_BadPassionPenaltyTip>How far below no-passion an undesirable modded passion (apathy, natural ineptitude...) scores by default. 0 = neutral. Vanilla passions are unaffected.</AP_BadPassionPenaltyTip>
+  <AP_MaxPassionBonus>Max passion bonus</AP_MaxPassionBonus>
+  <AP_MaxPassionBonusTip>Ceiling on the bonus a modded passion's learn rate can produce, so a 3x enthusiasm can't out-value skill itself. Values you set yourself on the sliders above are not capped.</AP_MaxPassionBonusTip>
+
+  <!-- Live math lines -->
+  <AP_LivePassionLevels>Right now: worth about {0} skill levels.</AP_LivePassionLevels>
+  <AP_LiveUrgency>Right now: maps to priority {0} on the 1–{1} range.</AP_LiveUrgency>
+  <AP_LiveWorkStat>Right now: a pawn working 40% faster scores +{0}%.</AP_LiveWorkStat>
+  <AP_LiveMaxWorkers>Right now: at most {0} of your {1} capable colonists.</AP_LiveMaxWorkers>
+  <AP_LiveMaxWorkersExample>For example: at most {0} of {1} capable colonists.</AP_LiveMaxWorkersExample>
 
 </LanguageData>

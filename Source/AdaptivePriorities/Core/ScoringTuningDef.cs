@@ -71,6 +71,13 @@ namespace AdaptivePriorities
         /// </summary>
         public float workStatWeight = 0.5f;
 
+        /// <summary>
+        /// Whether the minimum-worker coverage guarantee is enforced. When false, every work type's
+        /// minWorkers resolves to 0: nobody is force-assigned to work everyone is bad at, and jobs may
+        /// go completely uncovered (including Doctor in a small colony).
+        /// </summary>
+        public bool coverageGuaranteeEnabled = true;
+
         /// <summary>Whether a current inspiration matching a work type's skills grants a score bonus.</summary>
         public bool inspirationBonusEnabled = true;
 

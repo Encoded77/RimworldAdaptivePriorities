@@ -17,6 +17,7 @@
     <opposedWorkFactor>0</opposedWorkFactor>
     <assignOpposedWhenNeeded>true</assignOpposedWhenNeeded>
     <workStatWeight>0.5</workStatWeight>
+    <coverageGuaranteeEnabled>true</coverageGuaranteeEnabled>
     <inspirationBonusEnabled>true</inspirationBonusEnabled>
     <inspirationBonus>0.5</inspirationBonus>
     <inspirationUrgency>0.9</inspirationUrgency>

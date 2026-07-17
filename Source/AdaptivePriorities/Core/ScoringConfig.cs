@@ -24,6 +24,7 @@ namespace AdaptivePriorities.Core
         public static float WorkStatWeight => F("workStatWeight", Def.workStatWeight);
         public static float InspirationBonus => F("inspirationBonus", Def.inspirationBonus);
         public static float InspirationUrgency => F("inspirationUrgency", Def.inspirationUrgency);
+        public static bool CoverageGuaranteeEnabled => B("coverageGuaranteeEnabled", Def.coverageGuaranteeEnabled);
         public static bool InspirationBonusEnabled => B("inspirationBonusEnabled", Def.inspirationBonusEnabled);
         public static bool AssignOpposedWhenNeeded => B("assignOpposedWhenNeeded", Def.assignOpposedWhenNeeded);
     }

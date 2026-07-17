@@ -5,14 +5,14 @@ A RimWorld 1.6 mod that assigns colonist work priorities for you — based on sk
 ## Features
 
 - **Skill- and passion-aware scoring.** Ranks every colonist for every job by skill level, passions, and the traits/genes/bionics that affect work speed.
-- **Coverage guarantee.** Critical jobs (cooking, doctoring, firefighting, hauling…) always get a worker, even in a colony of poor fits — no more "nobody cooks".
+- **Coverage guarantee.** Critical jobs (cooking, doctoring, firefighting, hauling…) always get a worker, even in a colony of poor fits — no more "nobody cooks". Can be turned off in settings if you'd rather leave a job undone than force a bad fit.
 - **Specialization.** Your best cook cooks; work isn't spread thin across everyone.
 - **Respects the game's rules.** Incapable pawns, ideology restrictions, and downed/drafted/mental-break states are handled automatically — impossible work is never assigned.
 - **Inspiration-aware.** Routes inspired work to the inspired pawn before the inspiration expires.
 - **Ideology-opposed work** is assigned only as a last resort, and only if you allow it.
 - **Auto mode.** On by default for new colonies; reassigns on a calm interval (once per in-game day by default) so priorities don't chase short-lived events. Or turn it off and press **Optimize** manually.
 - **Locks.** Middle-click in the Work tab to protect hand-tuned assignments: a colonist's name locks the whole pawn, a column header locks a work type, a cell locks one assignment. Locked items show a padlock and are never touched automatically.
-- **Customizable settings.** Per-work-type importance and "everyone does this" toggles, plus an advanced section for the full scoring formula. Fully data-driven — other mods can rebalance or extend it with plain XML.
+- **Customizable settings.** A tabbed settings menu: compare every work type's importance side by side, expand a work type for its detailed options, and tune the bonus of every passion — modded ones included. Every setting has a tooltip explaining what it does and what your current value means in practice, and anything you've changed can be reset individually. Fully data-driven — other mods can rebalance or extend it with plain XML.
 
 ## Compatibility
 
@@ -25,6 +25,19 @@ A RimWorld 1.6 mod that assigns colonist work priorities for you — based on sk
 # Changelog
 
 All notable changes to this project are documented in this file.
+
+## [1.2.0] - 2026-07-17
+
+### Added
+- **New settings menu.** Settings are now organized into four tabs — General, Scoring, Work types, and Passions — instead of one long list.
+- **Work types table.** All work types are shown side by side so you can compare their importance at a glance. With advanced settings on, each row expands to show its detailed options.
+- **Passions tab.** Set the score bonus of every passion — including modded ones from Vanilla Skills Expanded and Alpha Skills, shown with their own icons. Passions you don't touch keep adjusting automatically.
+- **Helpful tooltips everywhere.** Every setting explains what it does, shows its default value, and where possible shows what your current value means in practice (e.g. how many workers a cap allows in your colony right now).
+
+### Changed
+- Options that currently have no effect (for example, specialist options while "Everyone does this" is on) are greyed out, with the reason shown in their tooltip.
+
+---
 
 ## [1.1.0] - 2026-07-17
 

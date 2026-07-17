@@ -25,6 +25,9 @@ namespace AdaptivePriorities
 
         public static string PolicyKey(string field, WorkTypeDef workType) => field + "@" + workType.defName;
 
+        /// <summary>Override key for a modded (VSE/Alpha) passion's score bonus.</summary>
+        public static string PassionKey(string passionDefName) => "passionBonus@" + passionDefName;
+
         public bool IsOverridden(string key) =>
             floatOverrides.ContainsKey(key) || boolOverrides.ContainsKey(key) || intOverrides.ContainsKey(key);
 
@@ -72,6 +75,15 @@ namespace AdaptivePriorities
             RemoveBySuffix(intOverrides, suffix);
         }
 
+        /// <summary>Whether any policy field of this work type is overridden (drives the row-level revert).</summary>
+        public bool HasWorkTypeOverride(WorkTypeDef workType)
+        {
+            string suffix = "@" + workType.defName;
+            return AnyKeyWithSuffix(floatOverrides, suffix)
+                   || AnyKeyWithSuffix(boolOverrides, suffix)
+                   || AnyKeyWithSuffix(intOverrides, suffix);
+        }
+
         public void ClearAll()
         {
             floatOverrides.Clear();
@@ -80,6 +92,14 @@ namespace AdaptivePriorities
         }
 
         public bool HasAnyOverride => floatOverrides.Count > 0 || boolOverrides.Count > 0 || intOverrides.Count > 0;
+
+        private static bool AnyKeyWithSuffix<T>(Dictionary<string, T> dict, string suffix)
+        {
+            foreach (var key in dict.Keys)
+                if (key.EndsWith(suffix))
+                    return true;
+            return false;
+        }
 
         private static void RemoveBySuffix<T>(Dictionary<string, T> dict, string suffix)
         {

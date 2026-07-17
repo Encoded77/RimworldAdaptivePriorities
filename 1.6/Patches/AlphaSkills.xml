@@ -148,19 +148,6 @@
           <bonus>0.25</bonus>
         </AdaptivePriorities.PassionScoreDef>
 
-        <!-- ===== GROUP 2: resting states the curve misreads ===== -->
-
-        <!-- Royalty. Psychic is not a base/_Active pair: HediffComp_PsychicPassion picks one of five
-             forms purely from PsychicSensitivity (<0.5 nullified, <=1 minor, <=1.5 psychic, <=2 major,
-             else critical). A baseline pawn sits at 1.0, making _Minor this passion's resting state -
-             but its 0.5x rate reads as 0.03, hiding a passion the game shows as real. The other four
-             forms map correctly and are left to the curve. -->
-        <AdaptivePriorities.PassionScoreDef>
-          <defName>AP_Score_AS_PsychicPassion_Minor</defName>
-          <passionDef>AS_PsychicPassion_Minor</passionDef>
-          <bonus>0.15</bonus>
-        </AdaptivePriorities.PassionScoreDef>
-
         <!-- ===== GROUP 3: isBad passions that should be neutral =====
              VSE's isBad means "a bad passion to have" - it gates learning - and PassionScoreService
              floors it to -badPassionPenalty. That is right for a pawn who dislikes the work, but wrong

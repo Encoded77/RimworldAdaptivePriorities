@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -9,14 +7,14 @@ namespace AdaptivePriorities.Core
 {
     /// <summary>
     /// Maps a pawn's passion in a skill to a 0..1 score bonus, covering modded passions with no
-    /// per-passion code. Vanilla None/Minor/Major use the tunable bonuses; a PassionScoreDef override
-    /// pins an exact value for a named passion; otherwise the bonus is derived from the passion's own
-    /// learnRateFactor, read from VSE's PassionDef by cached reflection (no assembly reference, gated on
-    /// the mod being active). Bad passions (isBad) are floored to a penalty so they steer work away.
+    /// per-passion code. Vanilla None/Minor/Major use the tunable bonuses; modded (VSE/Alpha Skills)
+    /// passions resolve with the same precedence as every other value in the mod:
+    /// settings override > XML Def (PassionScoreDef) > derived from the passion's own learnRateFactor,
+    /// read through <see cref="VsePassionBridge"/>. Bad passions (isBad) are floored to a penalty so
+    /// they steer work away.
     ///
-    /// Alpha Skills ships its passions as VSE PassionDefs and depends on VSE, so this one bridge covers
-    /// both. If VSE's internals move it falls back to the (VSE-patched) SkillRecord.LearnRateFactor, then
-    /// to a minor-passion bonus; it never throws into the scorer.
+    /// If VSE's internals move it falls back to the (VSE-patched) SkillRecord.LearnRateFactor, then to
+    /// a minor-passion bonus; it never throws into the scorer.
     /// </summary>
     public static class PassionScoreService
     {
@@ -25,17 +23,6 @@ namespace AdaptivePriorities.Core
         private const float LearnRateNone = 0.35f;
         private const float LearnRateMinor = 1f;
         private const float LearnRateMajor = 1.5f;
-
-        // Resolved reflectively so there's no build-time dependency on VSE.
-        private const string VsePackageId = "vanillaexpanded.skills";
-        private const string PassionManagerTypeName = "VSE.Passions.PassionManager";
-        private const string PassionDefTypeName = "VSE.Passions.PassionDef";
-
-        private static bool vseResolved;
-        private static bool vseAvailable;
-        private static MethodInfo passionToDefMethod; // static PassionDef PassionToDef(Passion)
-        private static FieldInfo learnRateField;      // float PassionDef.learnRateFactor
-        private static FieldInfo isBadField;          // bool  PassionDef.isBad
 
         private static Dictionary<string, PassionScoreDef> overridesByPassion;
         private static readonly Dictionary<Passion, PassionInfo> infoCache = new Dictionary<Passion, PassionInfo>();
@@ -57,6 +44,31 @@ namespace AdaptivePriorities.Core
         }
 
         /// <summary>
+        /// The bonus a passion gets before any per-passion settings override: the tunable Minor/Major
+        /// values for vanilla passions, and for modded ones the PassionScoreDef pin or the learn-rate
+        /// derivation. The settings UI reads this for slider defaults, so a slider left untouched keeps
+        /// tracking the curve (and the Minor/Major sliders that feed it).
+        /// </summary>
+        public static float DefaultBonusFor(Passion passion)
+        {
+            switch (passion)
+            {
+                case Passion.None:
+                    return 0f;
+                case Passion.Minor:
+                    return ScoringConfig.MinorPassionBonus;
+                case Passion.Major:
+                    return ScoringConfig.MajorPassionBonus;
+            }
+
+            var info = InfoFor(passion);
+            return info.defName != null ? DefaultModdedBonus(info) : ScoringConfig.MinorPassionBonus;
+        }
+
+        /// <summary>Whether a PassionScoreDef pins this passion's default (used by the settings tooltip).</summary>
+        public static bool HasXmlOverride(string passionDefName) => OverrideFor(passionDefName) != null;
+
+        /// <summary>
         /// Passion name for debug output: the VSE PassionDef's defName for a modded passion, the enum
         /// name for a vanilla one, the raw byte if it can't be resolved. Never throws. Debug-only - it
         /// allocates and resolves through reflection, so keep it off the scoring path.
@@ -76,51 +88,51 @@ namespace AdaptivePriorities.Core
             var info = InfoFor(passion);
             if (info.overrideDef != null)
                 return info.overrideDef.passionDef + "*";
+            if (info.defName != null)
+                return info.defName;
 
-            EnsureVse();
-            if (vseAvailable)
-            {
-                try
-                {
-                    if (passionToDefMethod.Invoke(null, new object[] { passion }) is Def def)
-                        return def.defName;
-                }
-                catch
-                {
-                }
-            }
-
-            return $"Passion#{(byte)passion}";
+            // Data reads can fail while the def itself still resolves; prefer its name to a raw byte.
+            var def = VsePassionBridge.PassionToDef(passion);
+            return def != null ? def.defName : $"Passion#{(byte)passion}";
         }
 
         private static float ModdedBonus(SkillRecord record)
         {
             var info = InfoFor(record.passion);
 
-            // Explicit override wins.
+            if (info.defName == null)
+            {
+                // VSE data unreadable: read the (VSE-patched) factor directly. direct:true drops the
+                // pawn's global-learning / saturation multipliers, leaving the passion signal.
+                try
+                {
+                    return Mathf.Clamp(FromLearnRate(record.LearnRateFactor(direct: true)), -1f, 1f);
+                }
+                catch
+                {
+                    // No readable data and no patch: treat as minor so it isn't ignored.
+                    return ScoringConfig.MinorPassionBonus;
+                }
+            }
+
+            float fallback = DefaultModdedBonus(info);
+            var settings = AdaptivePrioritiesMod.Settings;
+            float bonus = settings != null
+                ? settings.GetFloat(AdaptivePrioritiesSettings.PassionKey(info.defName), fallback)
+                : fallback;
+            return Mathf.Clamp(bonus, -1f, 1f);
+        }
+
+        /// <summary>Def-driven default: explicit PassionScoreDef pin, else the learn-rate derivation.</summary>
+        private static float DefaultModdedBonus(in PassionInfo info)
+        {
             if (info.overrideDef != null)
                 return Mathf.Clamp(info.overrideDef.bonus, -1f, 1f);
 
-            // Otherwise derive from the passion's learn rate and bad flag.
-            if (info.hasData)
-            {
-                float bonus = FromLearnRate(info.learnRate);
-                if (info.isBad)
-                    bonus = Mathf.Min(bonus, -ScoringConfig.BadPassionPenalty);
-                return Mathf.Clamp(bonus, -1f, 1f);
-            }
-
-            // VSE data unreadable: read the (VSE-patched) factor directly. direct:true drops the pawn's
-            // global-learning / saturation multipliers, leaving the passion signal.
-            try
-            {
-                return Mathf.Clamp(FromLearnRate(record.LearnRateFactor(direct: true)), -1f, 1f);
-            }
-            catch
-            {
-                // No readable data and no patch: treat as minor so it isn't ignored.
-                return ScoringConfig.MinorPassionBonus;
-            }
+            float bonus = FromLearnRate(info.learnRate);
+            if (info.isBad)
+                bonus = Mathf.Min(bonus, -ScoringConfig.BadPassionPenalty);
+            return Mathf.Clamp(bonus, -1f, 1f);
         }
 
         /// <summary>
@@ -163,25 +175,12 @@ namespace AdaptivePriorities.Core
         private static PassionInfo Resolve(Passion passion)
         {
             var info = default(PassionInfo);
-            EnsureVse();
-            if (!vseAvailable)
-                return info;
+            var passionDef = VsePassionBridge.PassionToDef(passion);
+            if (passionDef == null || !VsePassionBridge.TryGetData(passionDef, out info.learnRate, out info.isBad))
+                return default;
 
-            try
-            {
-                if (!(passionToDefMethod.Invoke(null, new object[] { passion }) is Def passionDef))
-                    return info;
-
-                info.learnRate = (float)learnRateField.GetValue(passionDef);
-                info.isBad = isBadField != null && (bool)isBadField.GetValue(passionDef);
-                info.hasData = true;
-                info.overrideDef = OverrideFor(passionDef.defName);
-            }
-            catch (Exception e)
-            {
-                Log.WarningOnce($"[Adaptive Priorities] Could not read VSE passion data; using learn-rate fallback. {e}", 77122301);
-            }
-
+            info.defName = passionDef.defName;
+            info.overrideDef = OverrideFor(passionDef.defName);
             return info;
         }
 
@@ -198,42 +197,10 @@ namespace AdaptivePriorities.Core
             return passionDefName != null && overridesByPassion.TryGetValue(passionDefName, out var d) ? d : null;
         }
 
-        private static void EnsureVse()
-        {
-            if (vseResolved)
-                return;
-            vseResolved = true;
-
-            if (!ModsConfig.IsActive(VsePackageId))
-                return;
-
-            try
-            {
-                var managerType = GenTypes.GetTypeInAnyAssembly(PassionManagerTypeName);
-                var passionDefType = GenTypes.GetTypeInAnyAssembly(PassionDefTypeName);
-                if (managerType == null || passionDefType == null)
-                {
-                    Log.Warning($"[Adaptive Priorities] {VsePackageId} is active but its passion types were not found; modded passions will use the learn-rate fallback.");
-                    return;
-                }
-
-                passionToDefMethod = managerType.GetMethod("PassionToDef", BindingFlags.Public | BindingFlags.Static);
-                learnRateField = passionDefType.GetField("learnRateFactor", BindingFlags.Public | BindingFlags.Instance);
-                isBadField = passionDefType.GetField("isBad", BindingFlags.Public | BindingFlags.Instance);
-
-                vseAvailable = passionToDefMethod != null && learnRateField != null;
-                if (!vseAvailable)
-                    Log.Warning("[Adaptive Priorities] VSE passion API shape changed; modded passions will use the learn-rate fallback.");
-            }
-            catch (Exception e)
-            {
-                Log.Warning($"[Adaptive Priorities] Failed to bind VSE passion API; modded passions will use the learn-rate fallback. {e}");
-            }
-        }
-
+        /// <summary>Cached per-Passion identity/data; null defName means "no readable VSE data".</summary>
         private struct PassionInfo
         {
-            public bool hasData;
+            public string defName;
             public float learnRate;
             public bool isBad;
             public PassionScoreDef overrideDef;

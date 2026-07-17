@@ -26,15 +26,15 @@ namespace AdaptivePriorities.Core
         public const string MaxWorkersFractionKey = "maxWorkersFraction";
         public const string ScoreCutoffKey = "scoreCutoff";
         public const string PinPriorityKey = "pinPriority";
+        public const string PriorityFalloffKey = "priorityFalloff";
 
         public static EffectiveWorkPolicy For(WorkTypeDef workType)
         {
             var def = WorkTypePolicyDef.For(workType);
             var s = AdaptivePrioritiesMod.Settings;
 
-            if (s == null)
-            {
-                return new EffectiveWorkPolicy
+            var policy = s == null
+                ? new EffectiveWorkPolicy
                 {
                     urgency = def.urgency,
                     assignEveryone = def.assignEveryone,
@@ -43,19 +43,24 @@ namespace AdaptivePriorities.Core
                     scoreCutoff = def.scoreCutoff,
                     pinPriority = def.pinPriority,
                     priorityFalloff = def.priorityFalloff,
+                }
+                : new EffectiveWorkPolicy
+                {
+                    urgency = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(UrgencyKey, workType), def.urgency),
+                    assignEveryone = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(AssignEveryoneKey, workType), def.assignEveryone),
+                    minWorkers = s.GetInt(AdaptivePrioritiesSettings.PolicyKey(MinWorkersKey, workType), def.minWorkers),
+                    maxWorkersFraction = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(MaxWorkersFractionKey, workType), def.maxWorkersFraction),
+                    scoreCutoff = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(ScoreCutoffKey, workType), def.scoreCutoff),
+                    pinPriority = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(PinPriorityKey, workType), def.pinPriority),
+                    priorityFalloff = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(PriorityFalloffKey, workType), def.priorityFalloff),
                 };
-            }
 
-            return new EffectiveWorkPolicy
-            {
-                urgency = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(UrgencyKey, workType), def.urgency),
-                assignEveryone = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(AssignEveryoneKey, workType), def.assignEveryone),
-                minWorkers = s.GetInt(AdaptivePrioritiesSettings.PolicyKey(MinWorkersKey, workType), def.minWorkers),
-                maxWorkersFraction = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(MaxWorkersFractionKey, workType), def.maxWorkersFraction),
-                scoreCutoff = s.GetFloat(AdaptivePrioritiesSettings.PolicyKey(ScoreCutoffKey, workType), def.scoreCutoff),
-                pinPriority = s.GetBool(AdaptivePrioritiesSettings.PolicyKey(PinPriorityKey, workType), def.pinPriority),
-                priorityFalloff = def.priorityFalloff,
-            };
+            // Coverage guarantee relaxed: minWorkers 0 makes the assigner's Max/rank checks degrade to
+            // "no forced coverage" with no assigner changes.
+            if (!ScoringConfig.CoverageGuaranteeEnabled)
+                policy.minWorkers = 0;
+
+            return policy;
         }
     }
 }
