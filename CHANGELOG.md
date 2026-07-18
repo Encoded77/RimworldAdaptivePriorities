@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.0] - 2026-07-18
+
+### Added
+- **Hunters Use Melee! support.** When that mod is active, a colonist's Melee skill and melee power (not just Shooting) count toward how good a hunter they are, so a strong melee fighter is picked for hunting.
+- **Vanilla Genetics Expanded support.** Its Genetics work type is now treated as the dedicated Intellectual specialist it is, instead of being buried near the bottom of the priority range.
+- **"Active by default on new colony" setting** (General tab, on by default). Turn it off to start new colonies with auto mode off — you then optimize manually or switch it on per-colony from the Work tab. Existing colonies are unaffected.
+
 ## [1.4.0] - 2026-07-17
 
 ### Added

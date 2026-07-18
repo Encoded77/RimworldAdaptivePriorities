@@ -20,6 +20,8 @@
   <AP_RevertWorkTypeTip>Reset every value of this work type to its default.</AP_RevertWorkTypeTip>
 
   <!-- Settings: general tab -->
+  <AP_ActiveByDefault>Active by default on new colony</AP_ActiveByDefault>
+  <AP_ActiveByDefaultTip>Whether auto mode is on when you start a new colony, so priorities are managed automatically from the first day. Turn this off to start new colonies with auto mode off — you then press Optimize manually, or switch it on per-colony from the Work tab.\n\nThis only sets the starting state; every colony can still toggle auto mode independently.</AP_ActiveByDefaultTip>
   <AP_ReassignEvery>Reassign interval (hours)</AP_ReassignEvery>
   <AP_AutoIntervalTip>How often work is reassigned in auto mode. Longer is calmer — priorities won't chase short-lived events like a brief mental break. 24 = once per day.</AP_AutoIntervalTip>
   <AP_CoverageGuarantee>Guarantee minimum coverage</AP_CoverageGuarantee>

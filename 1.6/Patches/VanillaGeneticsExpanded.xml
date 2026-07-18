@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
 
-  <!-- First-party support for Vanilla Books Expanded's Writing work type (VBE_Writing).
-       Gated by packageId so a def referencing VBE_Writing is only injected when the mod is active. -->
-  <Operation Class="PatchOperationAdd" MayRequire="VanillaExpanded.VBooksE">
+  <!-- First-party support for Vanilla Genetics Expanded's Genetics work type (GR_Genetics).
+       Gated by packageId so a def referencing GR_Genetics is only injected when the mod is active. -->
+  <Operation Class="PatchOperationAdd" MayRequire="VanillaExpanded.VGeneticsE">
     <xpath>/Defs</xpath>
     <value>
 
       <AdaptivePriorities.WorkTypePolicyDef>
-        <defName>AP_VBE_WritingPolicy</defName>
-        <workTypeDef>VBE_Writing</workTypeDef>
-        <urgency>0.45</urgency>
+        <defName>AP_VGE_GeneticsPolicy</defName>
+        <workTypeDef>GR_Genetics</workTypeDef>
+        <urgency>0.5</urgency>
         <minWorkers>1</minWorkers>
         <maxWorkersFraction>0.5</maxWorkersFraction>
         <scoreCutoff>0.35</scoreCutoff>
       </AdaptivePriorities.WorkTypePolicyDef>
 
       <AdaptivePriorities.WorkTypeStatsDef>
-        <defName>AP_VBE_WritingStats</defName>
-        <workTypeDef>VBE_Writing</workTypeDef>
+        <defName>AP_VGE_GeneticsStats</defName>
+        <workTypeDef>GR_Genetics</workTypeDef>
         <stats>
           <li>ResearchSpeed</li>
         </stats>

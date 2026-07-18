@@ -18,6 +18,7 @@ namespace AdaptivePriorities.UI.Settings
             listing.Begin(viewRect);
             try
             {
+                DrawActiveByDefaultRow(listing.GetRect(SettingsWidgets.RowHeight));
                 DrawIntervalRow(listing.GetRect(SettingsWidgets.RowHeight));
 
                 var d = ScoringTuningDef.Active;
@@ -33,6 +34,30 @@ namespace AdaptivePriorities.UI.Settings
                 listing.End();
                 Widgets.EndScrollView();
             }
+        }
+
+        /// <summary>
+        /// Bespoke row: like the interval, this is a plain settings field (not an implicit-override key),
+        /// so it drives the kit's primitives directly. Default is on, so the revert arrow shows while off.
+        /// </summary>
+        private static void DrawActiveByDefaultRow(Rect rect)
+        {
+            var settings = AdaptivePrioritiesMod.Settings;
+            SettingsWidgets.Split(rect, SettingsWidgets.LabelWidth,
+                out var labelRect, out _, out var valueRect, out var revertRect);
+            SettingsWidgets.RowChrome(rect, labelRect, "AP_ActiveByDefault".Translate(), "activeByDefaultOnNewColony",
+                SettingsWidgets.Tip(() => "AP_ActiveByDefaultTip".Translate(),
+                    () => "On".Translate()), disabled: false);
+
+            bool cur = settings.activeByDefaultOnNewColony;
+            bool v = cur;
+            Widgets.Checkbox(new Vector2(valueRect.xMax - 24f, rect.y + (rect.height - 24f) / 2f), ref v, 24f);
+            if (v != cur)
+                settings.activeByDefaultOnNewColony = v;
+
+            if (!settings.activeByDefaultOnNewColony)
+                SettingsWidgets.DrawRevert(revertRect, "AP_RevertTip".Translate(),
+                    () => settings.activeByDefaultOnNewColony = true);
         }
 
         /// <summary>

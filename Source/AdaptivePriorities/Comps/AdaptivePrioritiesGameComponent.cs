@@ -75,11 +75,13 @@ namespace AdaptivePriorities
         public override void StartedNewGame()
         {
             base.StartedNewGame();
-            // Auto mode is on for a fresh colony ("install and it just works"); the player can still
-            // turn it off per-save. Assign once immediately so starting colonists get priorities from
-            // tick one instead of waiting out an interval.
-            autoMode = true;
-            RunAutoRecalc();
+            // Auto mode defaults on for a fresh colony ("install and it just works"), but the player can
+            // flip that default in the mod settings; either way it stays togglable per-save from the Work
+            // tab. When on, assign once immediately so starting colonists get priorities from tick one
+            // instead of waiting out an interval.
+            autoMode = AdaptivePrioritiesMod.Settings?.activeByDefaultOnNewColony ?? true;
+            if (autoMode)
+                RunAutoRecalc();
         }
 
         // Auto mode is just a periodic scan: cheap every tick (one compare), real work once per

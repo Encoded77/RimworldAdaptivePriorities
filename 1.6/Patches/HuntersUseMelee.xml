@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+
+  <!-- First-party support for Hunters Use Melee!. Gated by packageId (MayRequireAnyOf) rather than
+       mod name: the widely-used 1.6 build is Mlie's "Hunters Use Melee! (Continued)", whose About.xml
+       <name> differs from the original, so a name match would silently miss it. We list both the
+       original (netrve.usemelee) and the Continued (Mlie.HuntersUseMelee) packageIds, and the whole
+       operation is skipped at load if neither is active. -->
+  <Operation Class="PatchOperationSequence" MayRequireAnyOf="netrve.usemelee,Mlie.HuntersUseMelee">
+    <operations>
+
+      <!-- Melee level -> base score. The scorer reads WorkTypeDef.relevantSkills directly, so adding
+           Melee there is what makes a pawn's melee level count toward their hunting fit. Kept after
+           Shooting so Shooting stays the primary skill (ranged hunting still works), and guarded with
+           not(li="Melee") so we never create a duplicate if another mod already added it. -->
+      <li Class="PatchOperationConditional">
+        <xpath>Defs/WorkTypeDef[defName="Hunting"]/relevantSkills[not(li="Melee")]</xpath>
+        <match Class="PatchOperationAdd">
+          <xpath>Defs/WorkTypeDef[defName="Hunting"]/relevantSkills</xpath>
+          <value>
+            <li>Melee</li>
+          </value>
+        </match>
+      </li>
+
+      <!-- Melee stats -> score multiplier. MeleeDamageFactor is a pure gene/trait/bionic multiplier
+           (neutral at 1) with no skill component, so it captures a pawn's physical melee ability beyond
+           the raw Melee level already in the base score - without double-counting skill the way
+           MeleeHitChance / MeleeDPS would (both fold Melee skill back in via a skill offset the scorer
+           can't divide out). This replaces Hunting's fallback WorkSpeedGlobal, a weak generic-speed
+           proxy. Resolved at runtime and skipped silently if the stat is absent. -->
+      <li Class="PatchOperationAdd">
+        <xpath>/Defs</xpath>
+        <value>
+          <AdaptivePriorities.WorkTypeStatsDef>
+            <defName>AP_HUM_HuntingStats</defName>
+            <workTypeDef>Hunting</workTypeDef>
+            <stats>
+              <li>MeleeDamageFactor</li>
+            </stats>
+          </AdaptivePriorities.WorkTypeStatsDef>
+        </value>
+      </li>
+
+    </operations>
+  </Operation>
+
+</Patch>

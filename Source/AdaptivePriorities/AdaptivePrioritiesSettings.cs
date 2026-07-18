@@ -16,6 +16,9 @@ namespace AdaptivePriorities
     {
         public bool advancedMode;
 
+        /// <summary>Whether auto mode starts on for a freshly created colony. The player can still toggle it per-save from the Work tab.</summary>
+        public bool activeByDefaultOnNewColony = true;
+
         /// <summary>Auto-mode interval in ticks (2500 = one in-game hour). Floored at one hour so priorities don't recompute every tick.</summary>
         public int autoRecalcIntervalTicks = GenDate.TicksPerHour;
 
@@ -118,6 +121,7 @@ namespace AdaptivePriorities
         {
             base.ExposeData();
             Scribe_Values.Look(ref advancedMode, "advancedMode", false);
+            Scribe_Values.Look(ref activeByDefaultOnNewColony, "activeByDefaultOnNewColony", true);
             Scribe_Values.Look(ref autoRecalcIntervalTicks, "autoRecalcIntervalTicks", GenDate.TicksPerHour);
             Scribe_Collections.Look(ref floatOverrides, "floatOverrides", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref boolOverrides, "boolOverrides", LookMode.Value, LookMode.Value);

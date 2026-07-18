@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
 
-  <!-- Score overrides for Alpha Skills' passions, added only when Alpha Skills is active (matched by
-       its About.xml <name>, not packageId), so we never reference a passion that wouldn't exist.
+  <!-- Score overrides for Alpha Skills' passions, added only when Alpha Skills is active (gated by its
+       packageId via MayRequire), so we never reference a passion that wouldn't exist.
 
        HOW THESE APPLY. A skill carries one passion def at a time, and PassionScoreService scores
        whichever it currently holds. Alpha's "triggered" passions are two separate defs: a persistent
@@ -17,13 +17,9 @@
 
        Unlisted passions need no override - the curve already maps them (Dedicated 1.25x -> 0.23,
        Forbidden 1.75x -> 0.38, every _Active form). Scale: minor 0.15, major 0.30. -->
-  <Operation Class="PatchOperationFindMod">
-    <mods>
-      <li>Alpha Skills</li>
-    </mods>
-    <match Class="PatchOperationAdd">
-      <xpath>/Defs</xpath>
-      <value>
+  <Operation Class="PatchOperationAdd" MayRequire="sarg.alphaskills">
+    <xpath>/Defs</xpath>
+    <value>
 
         <!-- ===== GROUP 1: triggered pairs =====
              Tiers by _Active learn rate: >=2.5x -> 0.45, 1.75-2.25x -> 0.35, 1.5x -> 0.25. The
@@ -171,8 +167,7 @@
           <bonus>0</bonus>
         </AdaptivePriorities.PassionScoreDef>
 
-      </value>
-    </match>
+    </value>
   </Operation>
 
 </Patch>
