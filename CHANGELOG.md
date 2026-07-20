@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.1] - 2026-07-20
+
+### Added
+- ModIcon.png
+
+### Changed
+- Preview.png
+
 ## [1.5.0] - 2026-07-18
 
 ### Added
