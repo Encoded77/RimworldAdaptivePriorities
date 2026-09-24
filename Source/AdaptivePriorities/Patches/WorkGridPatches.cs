@@ -34,8 +34,14 @@ namespace AdaptivePriorities.Patches
         // patch and skip the top-right base draw that would collide with its top bar.
         private static Type workTabWindowType;
 
+        private static bool applied;
+
         public static void Apply(Harmony h)
         {
+            if (h == null || applied)
+                return;
+            applied = true;
+
             var labelClick = new HarmonyMethod(typeof(WorkGridPatches), nameof(LabelCellPrefix));
             var labelDraw = new HarmonyMethod(typeof(WorkGridPatches), nameof(LabelCellPostfix));
             var headerClick = new HarmonyMethod(typeof(WorkGridPatches), nameof(WorkHeaderPrefix));
@@ -266,6 +272,30 @@ namespace AdaptivePriorities.Patches
                     Messages.Message("AP_RecalculateDone".Translate(changed), MessageTypeDefOf.TaskCompletion, historical: false);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Applies the grid UI hooks on the main thread. Harmony has to JIT the target method to patch it,
+    /// which triggers the declaring type's static constructor; several modded work columns load their
+    /// textures there, and Unity refuses resource loads off the main thread. Mod constructors run on a
+    /// worker thread, so patching from there left those types initialized with null textures. RimWorld
+    /// runs [StaticConstructorOnStartup] types on the main thread after content load, so patching here
+    /// is safe.
+    /// </summary>
+    [StaticConstructorOnStartup]
+    internal static class WorkGridPatchLoader
+    {
+        static WorkGridPatchLoader()
+        {
+            var harmony = AdaptivePrioritiesMod.HarmonyInstance;
+            if (harmony == null)
+            {
+                Log.Warning("[Adaptive Priorities] Harmony instance missing; grid UI hooks not applied.");
+                return;
+            }
+
+            WorkGridPatches.Apply(harmony);
         }
     }
 }
